@@ -1,0 +1,13 @@
+{
+  "assets": {
+    "backbone-ui.js": "backbone-ui-d7b3d414afc659e0ac03a54d1aa8956b.js"
+  },
+  "files": {
+    "backbone-ui-d7b3d414afc659e0ac03a54d1aa8956b.js": {
+      "logical_path": "backbone-ui.js",
+      "mtime": "2014-11-08T22:24:14.000Z",
+      "size": 426590,
+      "digest": "d7b3d414afc659e0ac03a54d1aa8956b"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "backbone-ui",
+  "version": "0.0.1",
+  "authors": [
+    "Van Carney <carney.van@gmail.com>"
+  ],
+  "main": "public/js/app.js",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "jquery": "2.1.1",
+    "underscore": "1.7.0",
+    "backbone":"1.1.2",
+    "nouislider":"*"
+  },
+  "devDependencies": {
+
+  }
+
+}
