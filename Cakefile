@@ -47,6 +47,7 @@ coffeeCallback=()->
   //= require jquery/dist/jquery
   //= require underscore/underscore
   //= require backbone/backbone
+  //= require fun-utils/dist/fun-utils
   //= require nouislider/distribute/jquery.nouislider.all
   """
   _t = _.template fs.readFileSync '/tmp/index.js', 'utf8'

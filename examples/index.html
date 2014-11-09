@@ -4,12 +4,19 @@
     <link rel="stylesheet" href="../build/css/panel.css"></link>
   </head>
   <body>
-    <div>
+    <div class="my-panel">
+      <div>
+        <h4>content</h4>
+      </div>
     </div>
     <script src="../bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
     <script src="../bower_components/underscore/underscore.js" type="text/javascript"></script>
     <script src="../bower_components/backbone/backbone.js" type="text/javascript"></script>
     <script src="../bower_components/nouislider/distribute/jquery.nouislider.all.js" type="text/javascript"></script>
+    <script src="../bower_components/fun-utils/dist/fun-utils.js" type="text/javascript"></script>
     <script src="../build/js/backbone-ui.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      var panel = new Backbone.controls.Panel( {el:'.my-panel', title:'demo'} );
+    </script>
   </body>
 </html>

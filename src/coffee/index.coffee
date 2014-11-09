@@ -5,8 +5,8 @@ global = exports ? window
 _         = (unless typeof exports is 'undefined' then require 'underscore' else global)._
 Backbone  = unless typeof exports is 'undefined' then require 'backbone' else global.Backbone
 (($)->
-  Backbone.controls ?= {}
-  Backbone.interactions ?= {}
+  Backbone.controls = {}
+  Backbone.interactions = {}
   class Backbone.CompositeView extends Backbone.View 
     collection: null
     __children: []
@@ -69,42 +69,12 @@ Backbone  = unless typeof exports is 'undefined' then require 'backbone' else gl
     childrenComplete:->
       @
     initialize:(o)->
-      _.extend @, Backbone.Events
       @setElement o.el if o? and o.el
       @setCollection o.collection if o? and o.collection
       @__parent = o.__parent if o? and o.__parent
       if typeof @init == 'function'
         if o? then @init o else @init() 
       @createChildren()
-  class Backbone.interactions.Draggable extends Object
-    constructor : (@__target, opts)->
-      _def =
-        oRoot:@__target
-        minX:0
-        maxX:window.width
-        maxY:0
-        maxY:window.height
-      _.extend _def, opts
-      _.extend @, Backbone.Events
-      _calcX = (xPos) =>
-        return x if xPos < (x = _def.minX)
-        return x if xPos > (x = _def.maxX)
-        xPos
-      _calcY = (yPos) =>
-        return y if yPos < (y = _def.minY)
-        return y if yPos > (y = _def.maxY)
-        yPos
-      @__target.on 'mousedown', (evt)=>
-        _def.oRoot.addClass 'drag-target'
-        @trigger 'dragStart', @_target.offset()
-        @__target.on 'mousemove', (evt)=>
-          @__target.offset o =
-            top:  ( _calcY evt.pageY ) - $('.drag-target').outerHeight() / 2
-            left: ( _calcX evt.pageX ) - $('.drag-target').outerWidth()  / 2
-          @trigger 'dragUpdate', o
-        @__target.on 'mouseup', (evt)=>
-          @__target.on 'mouseup', (evt)=>
-            _def.oRoot.removeClass('drag-target').off 'mousemove'
-            @trigger 'dragStop', @__target.offset()
   '{{classes}}'
+  true
 ) jQuery

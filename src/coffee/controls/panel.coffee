@@ -26,20 +26,23 @@ class Backbone.controls.Panel extends Backbone.CompositeView
     @['.panel-content']?.removeAllChildren()
   render:->
     Panel.__super__.render.call @
-    _tpl = _.template _t if (clazz = Backbone.controls[Fun.getConstructorName @])? and typeof (_t = clazz.__template__) == 'string'
-    @$('.panel-content').html _tpl( if @model?.attributes? then @model.attributes else {} )
+    _tpl = _.template _t if (clazz = Backbone.controls.Panel)? and typeof (_t = clazz.__template__) == 'string'
+    @$el.html _tpl( if @model?.attributes? then @model.attributes else {} )
+    @$el.find('.panel-content').html @__content if @__content? and typeof @__content is 'string'
     _.each @subviews, (clazz,sel)=>
       @$('.panel-content').find(sel).append @[sel].$el if @[sel]
-    new Backbone.controls.Draggable @$('panel-header'), {oRoot: @}
+    @$el.draggable handle:'.panel-header'
     @
   initialize:(o)->
-    @template = _.template _t if (clazz = Backbone.controls.Panel)? and typeof (_t = clazz.__template__) == 'string'
-    Panel.__super__.constructor.__super__.initialize.call @, o
+    @__content  =  @$el.children().html().toString()
+    @$el.children().remove()
+    # @template   = _.template _t if (clazz = Backbone.controls.Panel)? and typeof (_t = clazz.__template__) == 'string'
+    Panel.__super__.initialize.call @, o
 Backbone.controls.Panel.__template__ = """
-<div class="Backbone.controls-panel {{minified ? 'minified' : ''}}">
+<div class="bbui-panel-container<%= minified ? ' minified' : ''%>">
   <div class="panel-header">
     <div class="panel-title-container">
-      <h1 class="panel-title">{{title}}</h1>
+      <h1 class="panel-title"><%=title%></h1>
     </div> 
   </div>
   <div class="panel-content">
