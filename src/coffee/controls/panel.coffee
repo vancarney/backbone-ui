@@ -24,13 +24,16 @@ class Backbone.controls.Panel extends Backbone.CompositeView
     @['.panel-content']?.replaceChild sel,clazz
   removeAllChildren:->
     @['.panel-content']?.removeAllChildren()
+  createChildren:->
+    _tpl = _.template _t if (clazz = (Fun.getConstructorName @) || Panel)? and typeof (_t = clazz.__template__) == 'string'
+    @$el.html _tpl( if @model?.attributes? then @model.attributes else {} ) if _tpl
+    @$el.find('.panel-content').html @__content if @__content? and typeof @__content is 'string'
+    Panel.__super__.createChildren.call @
   render:->
     Panel.__super__.render.call @
-    _tpl = _.template _t if (clazz = Backbone.controls.Panel)? and typeof (_t = clazz.__template__) == 'string'
-    @$el.html _tpl( if @model?.attributes? then @model.attributes else {} )
-    @$el.find('.panel-content').html @__content if @__content? and typeof @__content is 'string'
-    _.each @subviews, (clazz,sel)=>
-      @$('.panel-content').find(sel).append @[sel].$el if @[sel]
+    # _.each @subviews, (clazz,sel)=>
+      # console.log "@[sel]: #{@[sel]}"
+      # @$('.panel-content').find(sel).append @[sel].$el if @[sel]
     @$el.draggable handle:'.panel-header'
     @
   initialize:(o)->

@@ -1,12 +1,13 @@
 <html>
   <head>
     <title>Backbone UI Component Examples</title>
-    <link rel="stylesheet" href="../build/css/panel.css"></link>
+    <link rel="stylesheet" href="../build/css/backbone-ui.css"></link>
   </head>
   <body>
     <div class="my-panel">
       <div>
-        <h4>content</h4>
+        <h4>controls:</h4>
+        <div id="checkbox"></div>
       </div>
     </div>
     <script src="../bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
@@ -16,7 +17,33 @@
     <script src="../bower_components/fun-utils/dist/fun-utils.js" type="text/javascript"></script>
     <script src="../build/js/backbone-ui.js" type="text/javascript"></script>
     <script type="text/javascript">
-      var panel = new Backbone.controls.Panel( {el:'.my-panel', title:'demo'} );
+      var global = window;
+      (function($) {
+        
+        var __hasProp = {}.hasOwnProperty,
+          __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+        global.CtrlCheckbox = (function(_super) {
+          __extends(CtrlCheckbox, _super);
+        
+          function CtrlCheckbox() {
+            return CtrlCheckbox.__super__.constructor.apply(this, arguments);
+          }
+          
+          return CtrlCheckbox;
+        })(Backbone.controls.Checkbox);
+        
+        global.CtrlCheckbox.__template__ = "<div class='checkbox-container'> \
+          <label for='cbk_1'>Click Here:</label> \
+          <input type='checkbox' name='cbk_1' id='cbx' checked='true'/> \
+          <div class='checkbox-symbol'></div> \
+        </div>";
+        var panel = new (Backbone.controls.Panel.extend({
+          subviews:{
+           "#checkbox":global.CtrlCheckbox
+          }
+        }))( {el:'.my-panel', title:'demo'} );
+      })(jQuery);
     </script>
   </body>
 </html>

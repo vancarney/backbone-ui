@@ -233,6 +233,7 @@
 	  };
 	
 	  Checkbox.prototype.initialize = function(opts) {
+	    var clazz, _t;
 	    if (opts == null) {
 	      opts = {};
 	    }
@@ -240,7 +241,9 @@
 	    if (opts.el) {
 	      this.$el = $(this.el = opts.el);
 	    }
-	    this.template = _.template(Backbone.controls.Checkbox.__template__);
+	    if (((clazz = global[Fun.getConstructorName(this)] || Backbone.controls.Checkbox) != null) && typeof (_t = clazz.__template__) === 'string') {
+	      this.template = _.template(_t);
+	    }
 	    return this.render();
 	  };
 	
@@ -307,23 +310,22 @@
 	    return (_ref = this['.panel-content']) != null ? _ref.removeAllChildren() : void 0;
 	  };
 	
-	  Panel.prototype.render = function() {
+	  Panel.prototype.createChildren = function() {
 	    var clazz, _ref, _t, _tpl;
-	    Panel.__super__.render.call(this);
-	    if (((clazz = Backbone.controls.Panel) != null) && typeof (_t = clazz.__template__) === 'string') {
+	    if (((clazz = (Fun.getConstructorName(this)) || Panel) != null) && typeof (_t = clazz.__template__) === 'string') {
 	      _tpl = _.template(_t);
 	    }
-	    this.$el.html(_tpl(((_ref = this.model) != null ? _ref.attributes : void 0) != null ? this.model.attributes : {}));
+	    if (_tpl) {
+	      this.$el.html(_tpl(((_ref = this.model) != null ? _ref.attributes : void 0) != null ? this.model.attributes : {}));
+	    }
 	    if ((this.__content != null) && typeof this.__content === 'string') {
 	      this.$el.find('.panel-content').html(this.__content);
 	    }
-	    _.each(this.subviews, (function(_this) {
-	      return function(clazz, sel) {
-	        if (_this[sel]) {
-	          return _this.$('.panel-content').find(sel).append(_this[sel].$el);
-	        }
-	      };
-	    })(this));
+	    return Panel.__super__.createChildren.call(this);
+	  };
+	
+	  Panel.prototype.render = function() {
+	    Panel.__super__.render.call(this);
 	    this.$el.draggable({
 	      handle: '.panel-header'
 	    });

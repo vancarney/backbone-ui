@@ -24,7 +24,7 @@ class Backbone.controls.Checkbox extends Backbone.View
   initialize:(opts={})->
     _.extend @__opts, opts.params
     @$el      = $(@el = opts.el) if opts.el
-    @template = _.template Backbone.controls.Checkbox.__template__
+    @template = _.template _t if (clazz = global[Fun.getConstructorName @] || Backbone.controls.Checkbox)? and typeof (_t = clazz.__template__) is 'string'
     @render()
 Backbone.controls.Checkbox.__template__ = """
 <span class="checkbox-container">
