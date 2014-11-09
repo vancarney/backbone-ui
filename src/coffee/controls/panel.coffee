@@ -37,7 +37,7 @@ class Backbone.controls.Panel extends Backbone.CompositeView
     @$el.draggable handle:'.panel-header'
     @
   initialize:(o)->
-    @__content  =  @$el.children().html().toString()
+    @__content  =  @$el.children().html()
     @$el.children().remove()
     # @template   = _.template _t if (clazz = Backbone.controls.Panel)? and typeof (_t = clazz.__template__) == 'string'
     Panel.__super__.initialize.call @, o

@@ -14887,7 +14887,7 @@ function closure ( target, options, originalOptions ){
 	  };
 	
 	  Panel.prototype.initialize = function(o) {
-	    this.__content = this.$el.children().html().toString();
+	    this.__content = this.$el.children().html();
 	    this.$el.children().remove();
 	    return Panel.__super__.initialize.call(this, o);
 	  };
