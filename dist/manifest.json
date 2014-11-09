@@ -1,6 +1,6 @@
 {
   "assets": {
-    "backbone-ui.js": "backbone-ui-a74f80984e0dd1725188f40cabcd55a6.js"
+    "backbone-ui.js": "backbone-ui-f3c5070b2bfb7644ad686e1a7aa2fa43.js"
   },
   "files": {
     "backbone-ui-a74f80984e0dd1725188f40cabcd55a6.js": {
@@ -8,6 +8,12 @@
       "mtime": "2014-11-09T22:03:31.000Z",
       "size": 427402,
       "digest": "a74f80984e0dd1725188f40cabcd55a6"
+    },
+    "backbone-ui-f3c5070b2bfb7644ad686e1a7aa2fa43.js": {
+      "logical_path": "backbone-ui.js",
+      "mtime": "2014-11-09T23:56:44.000Z",
+      "size": 427420,
+      "digest": "f3c5070b2bfb7644ad686e1a7aa2fa43"
     }
   }
 }

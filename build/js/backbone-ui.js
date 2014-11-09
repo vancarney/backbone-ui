@@ -312,7 +312,7 @@
 	
 	  Panel.prototype.createChildren = function() {
 	    var clazz, _ref, _t, _tpl;
-	    if (((clazz = (Fun.getConstructorName(this)) || Panel) != null) && typeof (_t = clazz.__template__) === 'string') {
+	    if (((clazz = (Fun.getConstructorName(this)) || Backbone.controls.Panel) != null) && typeof (_t = clazz.__template__) === 'string') {
 	      _tpl = _.template(_t);
 	    }
 	    if (_tpl) {
