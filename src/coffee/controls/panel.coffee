@@ -25,7 +25,8 @@ class Backbone.controls.Panel extends Backbone.CompositeView
   removeAllChildren:->
     @['.panel-content']?.removeAllChildren()
   createChildren:->
-    _tpl = _.template _t if (clazz = (Fun.getConstructorName @) || Backbone.controls.Panel)? and typeof (_t = clazz.__template__) == 'string'
+    if (_t = (Fun.getConstructorName @)?.__template__ || Backbone.controls.Panel.__template__) is 'string'
+      _tpl = _.template _t
     @$el.html _tpl( if @model?.attributes? then @model.attributes else {} ) if _tpl
     @$el.find('.panel-content').html @__content if @__content? and typeof @__content is 'string'
     Panel.__super__.createChildren.call @

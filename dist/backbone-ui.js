@@ -14865,12 +14865,12 @@ function closure ( target, options, originalOptions ){
 	  };
 	
 	  Panel.prototype.createChildren = function() {
-	    var clazz, _ref, _t, _tpl;
-	    if (((clazz = (Fun.getConstructorName(this)) || Backbone.controls.Panel) != null) && typeof (_t = clazz.__template__) === 'string') {
+	    var _ref, _ref1, _t, _tpl;
+	    if ((_t = ((_ref = Fun.getConstructorName(this)) != null ? _ref.__template__ : void 0) || Backbone.controls.Panel.__template__) === 'string') {
 	      _tpl = _.template(_t);
 	    }
 	    if (_tpl) {
-	      this.$el.html(_tpl(((_ref = this.model) != null ? _ref.attributes : void 0) != null ? this.model.attributes : {}));
+	      this.$el.html(_tpl(((_ref1 = this.model) != null ? _ref1.attributes : void 0) != null ? this.model.attributes : {}));
 	    }
 	    if ((this.__content != null) && typeof this.__content === 'string') {
 	      this.$el.find('.panel-content').html(this.__content);
