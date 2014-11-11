@@ -365,28 +365,10 @@
 	
 	  Slider.prototype.events = {
 	    'slide .bbui-slider-element': function() {
-	      return console.log('slide');
-	    }
-	  };
-	
-	  Slider.prototype.minValue = function(v) {
-	    if ((v != null) && typeof v === 'Number') {
-	      this.model.set({
-	        minValue: v
+	      return this.trigger('change', {
+	        value: this.value()
 	      });
-	      return this;
 	    }
-	    return this.attributes.minValue;
-	  };
-	
-	  Slider.prototype.maxValue = function(v) {
-	    if ((v != null) && typeof v === 'Number') {
-	      this.model.set({
-	        maxValue: v
-	      });
-	      return this;
-	    }
-	    return this.attributes.maxValue;
 	  };
 	
 	  Slider.prototype.value = function(v) {

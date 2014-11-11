@@ -11,17 +11,8 @@ class Backbone.controls.Slider extends Backbone.CompositeView
   getSliderOpts:(o)->
      _.pick (o || @model.attributes), 'start', 'range', 'connect', 'margin', 'limit', 'step', 'orientation', 'direction', 'animate'
   events:
-    'slide .bbui-slider-element':-> console.log 'slide'
-  minValue:(v)->
-    if (v? and typeof v is 'Number')
-      @model.set minValue:v
-      return @
-    @attributes.minValue
-  maxValue:(v)->
-    if (v? and typeof v is 'Number')
-      @model.set maxValue:v
-      return @
-    @attributes.maxValue
+    'slide .bbui-slider-element':->
+      @trigger 'change', value:@value()
   value:(v)->
     if (v? and typeof v is 'Number')
       @$('.bbui-slider-element').val v
