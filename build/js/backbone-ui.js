@@ -407,7 +407,7 @@
 	    if (((clazz = Backbone.controls.Slider) != null) && typeof (_t = clazz.__template__) === 'string') {
 	      this.template = _.template(_t);
 	    }
-	    this.model.on('change', render);
+	    this.model.on('change', this.render);
 	    return Slider.__super__.initialize.call(this, o);
 	  };
 	
