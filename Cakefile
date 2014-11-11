@@ -23,7 +23,7 @@ catch err
 # paths object for module invocation reference
 paths={
   "coffee": [
-    "dist",
+    "build",
     "src/coffee"
   ],
   "styl": [
@@ -43,10 +43,17 @@ exts='coffee|jade'
 # Callback From 'coffee'
 coffeeCallback=()->
   console.log arguments if arguments[0]?
+  inc = """
+  //= require nouislider/distribute/jquery.nouislider
+  """
   _t = _.template fs.readFileSync '/tmp/index.js', 'utf8'
   js = _t {classes:(str = fs.readFileSync '/tmp/classes.js', 'utf8').substr(str.indexOf('\n\n')+1, str.length-1).replace /\n/g, "\n\t"}
   # console.log str.indexOf '\n\n'
-  fs.writeFileSync 'dist/backbone-ui.js', "#{js}"
+  fs.writeFileSync 'build/js/backbone-ui.js', "#{inc}\n#{js}"
+mincerCallback = (cB)->
+  manifest = require './dist/manifest.json'
+  path = manifest.assets["backbone-ui.js"]
+  exec "mv ./dist/#{path} ./dist/backbone-ui.js", cB
 # Callback From 'stylus'
 stylusCallback=()->
   console.log arguments if arguments[0]?
@@ -64,7 +71,8 @@ build = ()->
   exec "stylus src/styl --out dist ", stylusCallback
 task 'build:dist', 'Compiles Sources', ()-> build_dist -> log ':)', green     
 build_dist = (cB)=>
-  cB?()
+  exec "mincer --include bower_components --include build/js --output dist backbone-ui.js", =>
+    mincerCallback cB
 # ## *watch*
 # watch project src folders and build on change
 task 'watch', 'watch project src folders and build on change', ()-> watch -> log ':)', green
