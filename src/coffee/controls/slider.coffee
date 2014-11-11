@@ -28,7 +28,7 @@ class Backbone.controls.Slider extends Backbone.CompositeView
   render:->
     Slider.__super__.render.call @
     @$el.html @template @model.attributes if @template?
-    @$('.bbui-slider-element').noUiSlider _.pick @model, 'start', 'range', 'connect', 'margin', 'limit', 'step', 'orientation', 'direction', 'animate'
+    @$('.bbui-slider-element').noUiSlider _.pick @model.attributes, 'start', 'range', 'connect', 'margin', 'limit', 'step', 'orientation', 'direction', 'animate'
   initialize:(o)->
     _.extend @model.attributes, _.pick o, 'start', 'range', 'connect', 'margin', 'limit', 'step', 'orientation', 'direction', 'animate'
     @template   = _.template _t if (clazz = Backbone.controls.Slider)? and typeof (_t = clazz.__template__) == 'string'

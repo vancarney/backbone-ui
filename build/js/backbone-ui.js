@@ -398,7 +398,7 @@
 	    if (this.template != null) {
 	      this.$el.html(this.template(this.model.attributes));
 	    }
-	    return this.$('.bbui-slider-element').noUiSlider(_.pick(this.model, 'start', 'range', 'connect', 'margin', 'limit', 'step', 'orientation', 'direction', 'animate'));
+	    return this.$('.bbui-slider-element').noUiSlider(_.pick(this.model.attributes, 'start', 'range', 'connect', 'margin', 'limit', 'step', 'orientation', 'direction', 'animate'));
 	  };
 	
 	  Slider.prototype.initialize = function(o) {
