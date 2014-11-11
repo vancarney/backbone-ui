@@ -23,15 +23,15 @@ catch err
 # paths object for module invocation reference
 paths={
   "coffee": [
-    "build/js",
+    "dist",
     "src/coffee"
   ],
   "styl": [
-    "build/css",
+    "dist",
     "src/styl"
   ],
   "uglify": [
-    "build/js"
+    "dist/js"
   ],
 }
 
@@ -43,17 +43,10 @@ exts='coffee|jade'
 # Callback From 'coffee'
 coffeeCallback=()->
   console.log arguments if arguments[0]?
-  inc = """
-  //= require jquery/dist/jquery
-  //= require underscore/underscore
-  //= require backbone/backbone
-  //= require fun-utils/dist/fun-utils
-  //= require nouislider/distribute/jquery.nouislider.all
-  """
   _t = _.template fs.readFileSync '/tmp/index.js', 'utf8'
   js = _t {classes:(str = fs.readFileSync '/tmp/classes.js', 'utf8').substr(str.indexOf('\n\n')+1, str.length-1).replace /\n/g, "\n\t"}
   # console.log str.indexOf '\n\n'
-  fs.writeFileSync 'build/js/backbone-ui.js', "#{inc}\n#{js}"
+  fs.writeFileSync 'dist/backbone-ui.js', "#{js}"
 # Callback From 'stylus'
 stylusCallback=()->
   console.log arguments if arguments[0]?
@@ -68,11 +61,10 @@ build = ()->
   exec "coffee -o /tmp -c src/coffee/index.coffee", =>
     console.log arguments if arguments[0]?
     exec "coffee --join /tmp/classes.js -b --compile #{manifest.files.join(' ').replace(/('|\")/g, '')}", coffeeCallback
-  exec "stylus src/styl --out build/css ", stylusCallback
+  exec "stylus src/styl --out dist ", stylusCallback
 task 'build:dist', 'Compiles Sources', ()-> build_dist -> log ':)', green     
 build_dist = (cB)=>
-  exec "mincer --include bower_components --include build/js --output dist backbone-ui.js", =>
-    exec "cp build/css/app.css dist", cB
+  cB?()
 # ## *watch*
 # watch project src folders and build on change
 task 'watch', 'watch project src folders and build on change', ()-> watch -> log ':)', green
