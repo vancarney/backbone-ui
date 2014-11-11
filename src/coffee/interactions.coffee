@@ -1,6 +1,6 @@
 $.fn.draggable = (opt)->
   opt = $.extend {handle:null,cursor:"move"}, opt
-  $el = if opt.handle? then @ else @find opt.handle
+  $el = if opt.handle? then @find opt.handle else @
   $el.css('cursor', opt.cursor).on "mousedown", (evt)->
     $drag = if opt.handle? then $(@).addClass('draggable') else $(@).addClass('active-handle').parent().addClass 'draggable'
     z_idx = $drag.css 'z-index'

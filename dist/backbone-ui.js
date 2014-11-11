@@ -2450,7 +2450,7 @@ function closure ( target, options, originalOptions ){
 	    handle: null,
 	    cursor: "move"
 	  }, opt);
-	  $el = opt.handle != null ? this : this.find(opt.handle);
+	  $el = opt.handle != null ? this.find(opt.handle) : this;
 	  return $el.css('cursor', opt.cursor).on("mousedown", function(evt) {
 	    var $drag, drg_h, drg_w, pos_x, pos_y, z_idx;
 	    $drag = opt.handle != null ? $(this).addClass('draggable') : $(this).addClass('active-handle').parent().addClass('draggable');
