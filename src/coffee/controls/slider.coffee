@@ -42,7 +42,7 @@ class Backbone.controls.Slider extends Backbone.CompositeView
     
 Backbone.controls.Slider.__template__ = """
 <div class="bbui-slider <%=classes || ""%>>
-  <span class="label"><%=Label%></span>
+  <span class="label"><%=label%></span>
   <div class="bbui-slider-element"></div>
 </div>
 """

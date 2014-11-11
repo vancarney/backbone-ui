@@ -424,7 +424,7 @@
 	
 	})(Backbone.CompositeView);
 	
-	Backbone.controls.Slider.__template__ = "<div class=\"bbui-slider <%=classes || \"\"%>>\n  <span class=\"label\"><%=Label%></span>\n  <div class=\"bbui-slider-element\"></div>\n</div>";
+	Backbone.controls.Slider.__template__ = "<div class=\"bbui-slider <%=classes || \"\"%>>\n  <span class=\"label\"><%=label%></span>\n  <div class=\"bbui-slider-element\"></div>\n</div>";
 	
     return true;
   })(jQuery);
