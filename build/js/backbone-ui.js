@@ -359,6 +359,10 @@
 	    }
 	  }));
 	
+	  Slider.prototype.getSliderOpts = function(o) {
+	    return _.pick(o || this.model.attributes, 'start', 'range', 'connect', 'margin', 'limit', 'step', 'orientation', 'direction', 'animate');
+	  };
+	
 	  Slider.prototype.events = {
 	    'slide .bbui-slider-element': function() {
 	      return console.log('slide');
@@ -398,12 +402,12 @@
 	    if (this.template != null) {
 	      this.$el.html(this.template(this.model.attributes));
 	    }
-	    return this.$('.bbui-slider-element').noUiSlider(_.pick(this.model.attributes, 'start', 'range', 'connect', 'margin', 'limit', 'step', 'orientation', 'direction', 'animate'));
+	    return this.$el.find('.bbui-slider-element').noUiSlider(this.getSliderOpts());
 	  };
 	
 	  Slider.prototype.initialize = function(o) {
 	    var clazz, _t;
-	    _.extend(this.model.attributes, _.pick(o, 'start', 'range', 'connect', 'margin', 'limit', 'step', 'orientation', 'direction', 'animate'));
+	    _.extend(this.model.attributes, this.getSliderOpts(o));
 	    if (((clazz = Backbone.controls.Slider) != null) && typeof (_t = clazz.__template__) === 'string') {
 	      this.template = _.template(_t);
 	    }
