@@ -2,7 +2,7 @@ $.fn.draggable = (opt)->
   opt = $.extend {handle:null,cursor:"move"}, opt
   $el = if opt.handle? then @find opt.handle else @
   $el.css('cursor', opt.cursor).on "mousedown", (evt)->
-    $drag = if opt.handle? then $(@).addClass('active-handle').parent().addClass 'draggable' else $(@).addClass('draggable') 
+    ($drag = if opt.handle? then $(@).addClass('active-handle').parent() else $(@)).addClass('draggable') 
     z_idx = $drag.css 'z-index'
     drg_h = $drag.outerHeight()
     drg_w = $drag.outerWidth()
@@ -18,6 +18,7 @@ $.fn.draggable = (opt)->
         evt.preventDefault()
     .on "mouseup", =>
       if opt.handle?
-        $(@).removeClass 'draggable'
-      else
         $(@).removeClass('active-handle').parent().removeClass 'draggable'
+      else
+        $(@).removeClass 'draggable'
+        
