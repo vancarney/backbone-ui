@@ -349,14 +349,13 @@
 	
 	  Slider.prototype.model = new (Backbone.Model.extend({
 	    defaults: {
-	      minValue: 0,
-	      maxValue: 100,
-	      value: 50,
+	      start: 50,
+	      range: {
+	        min: 0,
+	        max: 100
+	      },
 	      label: '',
 	      classes: ''
-	    },
-	    valueOf: function() {
-	      return this.attributes.value || 0;
 	    }
 	  }));
 	
@@ -388,36 +387,27 @@
 	
 	  Slider.prototype.value = function(v) {
 	    if ((v != null) && typeof v === 'Number') {
-	      this.model.set({
-	        value: v
-	      });
+	      this.$('.bbui-slider-element').val(v);
 	      return this;
 	    }
-	    return this.attributes.value;
+	    return this.$('.bbui-slider-element').val();
 	  };
 	
 	  Slider.prototype.render = function() {
-	    var _ref, _ref1, _ref2;
 	    Slider.__super__.render.call(this);
 	    if (this.template != null) {
 	      this.$el.html(this.template(this.model.attributes));
 	    }
-	    console.log(this.$('.bbui-slider-element'));
-	    return this.$('.bbui-slider-element').noUiSlider({
-	      start: ((_ref = this.model.attributes) != null ? _ref.value : void 0) || 0,
-	      range: {
-	        min: ((_ref1 = this.model.attributes) != null ? _ref1.minValue : void 0) || 0,
-	        max: ((_ref2 = this.model.attributes) != null ? _ref2.maxValue : void 0) || 100
-	      }
-	    });
+	    return this.$('.bbui-slider-element').noUiSlider(_.pick(this.model, start, range, connect, margin, limit, step, orientation, direction, animate));
 	  };
 	
 	  Slider.prototype.initialize = function(o) {
 	    var clazz, _t;
-	    _.extend(this.model.attributes, o);
+	    _.extend(this.model.attributes, _.pick(o, start, range, connect, margin, limit, step, orientation, direction, animate));
 	    if (((clazz = Backbone.controls.Slider) != null) && typeof (_t = clazz.__template__) === 'string') {
 	      this.template = _.template(_t);
 	    }
+	    this.model.on('change', render);
 	    return Slider.__super__.initialize.call(this, o);
 	  };
 	
