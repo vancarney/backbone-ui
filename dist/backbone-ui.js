@@ -350,12 +350,20 @@
 	    defaults: {
 	      minValue: 0,
 	      maxValue: 100,
-	      value: 50
+	      value: 50,
+	      label: '',
+	      classes: ''
 	    },
 	    valueOf: function() {
 	      return this.attributes.value || 0;
 	    }
 	  }));
+	
+	  Slider.prototype.events = {
+	    'slide .bbui-slider-element': function() {
+	      return console.log('slide');
+	    }
+	  };
 	
 	  Slider.prototype.minValue = function(v) {
 	    if ((v != null) && typeof v === 'Number') {
@@ -387,17 +395,36 @@
 	    return this.attributes.value;
 	  };
 	
-	  Slider.prototype.subviews = {
-	    '.bbui-slider-base': Backbone.controls._sliderBase
+	  Slider.prototype.render = function() {
+	    var _ref, _ref1, _ref2;
+	    Slider.__super__.render.call(this);
+	    if (this.template != null) {
+	      this.$el.html(this.template(this.model.attributes));
+	    }
+	    console.log(this.$('.bbui-slider-element'));
+	    return this.$('.bbui-slider-element').noUiSlider({
+	      start: ((_ref = this.model.attributes) != null ? _ref.value : void 0) || 0,
+	      range: {
+	        min: ((_ref1 = this.model.attributes) != null ? _ref1.minValue : void 0) || 0,
+	        max: ((_ref2 = this.model.attributes) != null ? _ref2.maxValue : void 0) || 100
+	      }
+	    });
 	  };
 	
-	  Slider.prototype.init = function(opts) {};
+	  Slider.prototype.initialize = function(o) {
+	    var clazz, _t;
+	    _.extend(this.model.attributes, o);
+	    if (((clazz = Backbone.controls.Slider) != null) && typeof (_t = clazz.__template__) === 'string') {
+	      this.template = _.template(_t);
+	    }
+	    return Slider.__super__.initialize.call(this, o);
+	  };
 	
 	  return Slider;
 	
 	})(Backbone.CompositeView);
 	
-	Backbone.controls.Slider.__template__ = "<div class=\"bbui-slider {{classes || \"\"}}>\n  <div class=\"bbui-slider-base\">\n    <div class=\"bbui-slider-ticks\"></div>\n  </div>\n</div>\"";
+	Backbone.controls.Slider.__template__ = "<div class=\"bbui-slider <%=classes || \"\"%>>\n  <span class=\"label\"><%=Label%></span>\n  <div class=\"bbui-slider-element\"></div>\n</div>";
 	
     return true;
   })(jQuery);

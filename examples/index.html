@@ -1,13 +1,15 @@
 <html>
   <head>
     <title>Backbone UI Component Examples</title>
-    <link rel="stylesheet" href="../build/css/backbone-ui.css"></link>
+    <link rel="stylesheet" href="../bower_components/nouislider/distribute/jquery.nouislider.min.css"></link>
+    <link rel="stylesheet" href="../dist/backbone-ui.css"></link>
   </head>
   <body>
     <div class="my-panel">
       <div>
         <h4>controls:</h4>
         <div id="checkbox"></div>
+        <div id="slider"></div>
       </div>
     </div>
     <script src="../bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
@@ -15,7 +17,7 @@
     <script src="../bower_components/backbone/backbone.js" type="text/javascript"></script>
     <script src="../bower_components/nouislider/distribute/jquery.nouislider.all.js" type="text/javascript"></script>
     <script src="../bower_components/fun-utils/dist/fun-utils.js" type="text/javascript"></script>
-    <script src="../build/js/backbone-ui.js" type="text/javascript"></script>
+    <script src="../dist/backbone-ui.js" type="text/javascript"></script>
     <script type="text/javascript">
       var global = window;
       (function($) {
@@ -38,11 +40,24 @@
           <input type='checkbox' name='cbk_1' id='cbx' checked='true'/> \
           <div class='checkbox-symbol'></div> \
         </div>";
+        
+        global.CtrlSlider = (function(_super) {
+          __extends(CtrlSlider, _super);
+        
+          function CtrlSlider() {
+            return CtrlSlider.__super__.constructor.apply(this, arguments);
+          }
+          
+          return CtrlSlider;
+        })(Backbone.controls.Slider);
+        
         var panel = new (Backbone.controls.Panel.extend({
           subviews:{
-           "#checkbox":global.CtrlCheckbox
+           "#checkbox":global.CtrlCheckbox,
+           "#slider":global.CtrlSlider
           }
         }))( {el:'.my-panel', title:'demo'} );
+        
       })(jQuery);
     </script>
   </body>
