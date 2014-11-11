@@ -2453,7 +2453,7 @@ function closure ( target, options, originalOptions ){
 	  $el = opt.handle != null ? this.find(opt.handle) : this;
 	  return $el.css('cursor', opt.cursor).on("mousedown", function(evt) {
 	    var $drag, drg_h, drg_w, pos_x, pos_y, z_idx;
-	    $drag = opt.handle != null ? $(this).addClass('draggable') : $(this).addClass('active-handle').parent().addClass('draggable');
+	    $drag = opt.handle != null ? $(this).addClass('active-handle').parent().addClass('draggable') : $(this).addClass('draggable');
 	    z_idx = $drag.css('z-index');
 	    drg_h = $drag.outerHeight();
 	    drg_w = $drag.outerWidth();
