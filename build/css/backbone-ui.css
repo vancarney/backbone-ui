@@ -1,0 +1,40 @@
+.bbui-panel-container {
+  position: absolute;
+  margin: 0 0 !important;
+  min-width: 180px;
+  border: 1px #666 solid;
+}
+.bbui-panel-container .panel-header {
+  position: relative;
+  min-height: 18px;
+  margin: 0 0 0 0;
+  background: #fff;
+  cursor: move;
+}
+.bbui-panel-container .panel-content {
+  position: relative;
+  min-height: 180px;
+  margin: 0 0 0 0;
+  background: #ccc;
+  padding: 6px;
+}
+.checkbox-container {
+  position: relative;
+  display: inline-block;
+}
+.checkbox-container .checkbox-symbol {
+  position: relative;
+  display: inline-block;
+  background: #1b1e22;
+  border: 1px solid #575b60;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+}
+.checkbox-container label {
+  display: inline-block;
+}
+.checkbox-container input[type='checkbox'] {
+  visibility: hidden;
+  width: 0;
+}

@@ -44,7 +44,7 @@ exts='coffee|jade'
 coffeeCallback=()->
   console.log arguments if arguments[0]?
   inc = """
-  //= require nouislider/distribute/jquery.nouislider
+  //= require nouislider/distribute/jquery.nouislider.all
   """
   _t = _.template fs.readFileSync '/tmp/index.js', 'utf8'
   js = _t {classes:(str = fs.readFileSync '/tmp/classes.js', 'utf8').substr(str.indexOf('\n\n')+1, str.length-1).replace /\n/g, "\n\t"}
@@ -53,10 +53,15 @@ coffeeCallback=()->
 mincerCallback = (cB)->
   manifest = require './dist/manifest.json'
   path = manifest.assets["backbone-ui.js"]
-  exec "mv ./dist/#{path} ./dist/backbone-ui.js", cB
+  exec "mv ./dist/#{path} ./dist/backbone-ui.js", =>
+    fs.unlink './dist/manifest.json', cB
 # Callback From 'stylus'
 stylusCallback=()->
-  console.log arguments if arguments[0]?
+  return console.log arguments if arguments[0]?
+  noui = fs.readFileSync 'bower_components/nouislider/distribute/jquery.nouislider.min.css', 'utf8'
+  pips = fs.readFileSync 'bower_components/nouislider/distribute/jquery.nouislider.pips.min.css', 'utf8'
+  css = fs.readFileSync 'build/css/backbone-ui.css', 'utf8'
+  fs.writeFileSync 'dist/backbone-ui.css', "#{noui}\n#{pips}\n#{css}"
 # Callback From 'docco'
 doccoCallback=()->
   # exec "rm -rf ../sparse-pages/docs; mv docs ../sparse-pages"
@@ -68,7 +73,7 @@ build = ()->
   exec "coffee -o /tmp -c src/coffee/index.coffee", =>
     console.log arguments if arguments[0]?
     exec "coffee --join /tmp/classes.js -b --compile #{manifest.files.join(' ').replace(/('|\")/g, '')}", coffeeCallback
-  exec "stylus src/styl --out dist ", stylusCallback
+  exec "stylus src/styl --out build/css ", stylusCallback
 task 'build:dist', 'Compiles Sources', ()-> build_dist -> log ':)', green     
 build_dist = (cB)=>
   exec "mincer --include bower_components --include build/js --output dist backbone-ui.js", =>
