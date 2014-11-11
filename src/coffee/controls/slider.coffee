@@ -41,7 +41,7 @@ class Backbone.controls.Slider extends Backbone.CompositeView
     Slider.__super__.initialize.call @, o
     
 Backbone.controls.Slider.__template__ = """
-<div class="bbui-slider <%=classes || ""%>>
+<div class="bbui-slider <%=classes || ''%>">
   <span class="label"><%=label%></span>
   <div class="bbui-slider-element"></div>
 </div>
