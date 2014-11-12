@@ -29,7 +29,7 @@ class Backbone.controls.Checkbox extends Backbone.View
 Backbone.controls.Checkbox.__template__ = """
 <span class="checkbox-container">
   <label for="{{id || ''}}">{{label}}</label>
-  <input type="checkbox" name="{{name}}" id="{{id || ''}}" checked="false"/>
+  <input type="checkbox" name="{{name}}" id="{{id || ''}}" value="off"/>
   <div class="checkbox-symbol {{classes || ''}}"></div>
 </span>
 """

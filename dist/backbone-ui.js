@@ -2541,7 +2541,7 @@ function closure ( target, options, originalOptions ){
 	
 	})(Backbone.View);
 	
-	Backbone.controls.Checkbox.__template__ = "<span class=\"checkbox-container\">\n  <label for=\"{{id || ''}}\">{{label}}</label>\n  <input type=\"checkbox\" name=\"{{name}}\" id=\"{{id || ''}}\" checked=\"false\"/>\n  <div class=\"checkbox-symbol {{classes || ''}}\"></div>\n</span>";
+	Backbone.controls.Checkbox.__template__ = "<span class=\"checkbox-container\">\n  <label for=\"{{id || ''}}\">{{label}}</label>\n  <input type=\"checkbox\" name=\"{{name}}\" id=\"{{id || ''}}\" value=\"off\"/>\n  <div class=\"checkbox-symbol {{classes || ''}}\"></div>\n</span>";
 	
 	Backbone.controls.Panel = (function(_super) {
 	  __extends(Panel, _super);
