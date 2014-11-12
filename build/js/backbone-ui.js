@@ -222,6 +222,17 @@
 	    }
 	  };
 	
+	  Checkbox.prototype.events = {
+	    'change input': function(evt) {
+	      return console.log($(evt.target).val());
+	    },
+	    'click .checkbox-container': function() {
+	      var ckBx, val;
+	      (ckBx = this.$el.find('input[type="checkbox"]')).val((val = ckBx.val() === 'on' ? 'off' : 'on'));
+	      return this.$el.find('.checkbox-symbol')[val === 'on' ? 'addClass' : 'removeClass']('checkbox-on');
+	    }
+	  };
+	
 	  Checkbox.prototype.render = function() {
 	    this.$el.html(this.template(this.__opts));
 	    this.delegateEvents();
@@ -247,7 +258,7 @@
 	
 	})(Backbone.View);
 	
-	Backbone.controls.Checkbox.__template__ = "<span class=\"checkbox-container\">\n  <label for=\"{{id || ''}}\">{{label}}</label>\n  <input type=\"checkbox\" name=\"{{name}}\" id=\"{{id || ''}}\" checked=\"{{ checked ? 'checked' : false}}\"/>\n  <div class=\"checkbox-symbol {{classes || ''}}\"></div>\n</span>";
+	Backbone.controls.Checkbox.__template__ = "<span class=\"checkbox-container\">\n  <label for=\"{{id || ''}}\">{{label}}</label>\n  <input type=\"checkbox\" name=\"{{name}}\" id=\"{{id || ''}}\" checked=\"false\"/>\n  <div class=\"checkbox-symbol {{classes || ''}}\"></div>\n</span>";
 	
 	Backbone.controls.Panel = (function(_super) {
 	  __extends(Panel, _super);

@@ -18,6 +18,9 @@
   background: #ccc;
   padding: 6px;
 }
+.checkbox-on:after {
+  content: "\2713";
+}
 .checkbox-container {
   position: relative;
   display: inline-block;
@@ -25,6 +28,7 @@
 .checkbox-container .checkbox-symbol {
   position: relative;
   display: inline-block;
+  color: #ccc;
   background: #1b1e22;
   border: 1px solid #575b60;
   top: 4px;

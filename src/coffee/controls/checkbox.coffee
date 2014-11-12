@@ -11,12 +11,12 @@ class Backbone.controls.Checkbox extends Backbone.View
       return @
     else
       return @$el.find('input').val()
-  # events:
-    # 'change input':(evt)->
-      # $(evt.target).val
-    # 'click .checkbox-container':->
-      # alert 'clicky'
-      # @$el.find('input[type="checkbox"]').attr('checked', !checked).click()
+  events:
+    'change input':(evt)->
+      console.log $(evt.target).val()
+    'click .checkbox-container':->
+      (ckBx = @$el.find 'input[type="checkbox"]').val (val = if ckBx.val() is 'on' then 'off' else 'on')
+      @$el.find('.checkbox-symbol')[if val is 'on' then 'addClass' else 'removeClass'] 'checkbox-on'
   render:->
     @$el.html @template @__opts
     @delegateEvents()
@@ -29,7 +29,7 @@ class Backbone.controls.Checkbox extends Backbone.View
 Backbone.controls.Checkbox.__template__ = """
 <span class="checkbox-container">
   <label for="{{id || ''}}">{{label}}</label>
-  <input type="checkbox" name="{{name}}" id="{{id || ''}}" checked="{{ checked ? 'checked' : false}}"/>
+  <input type="checkbox" name="{{name}}" id="{{id || ''}}" checked="false"/>
   <div class="checkbox-symbol {{classes || ''}}"></div>
 </span>
 """
