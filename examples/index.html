@@ -55,6 +55,9 @@
           subviews:{
            "#checkbox":global.CtrlCheckbox,
            "#slider":global.CtrlSlider
+          },
+          childrenComplete:function() {
+            this.model.set( {label:'New Label'} );
           }
         }))( {el:'.my-panel', title:'demo'} );
         
