@@ -21,7 +21,7 @@ class Backbone.controls.Slider extends Backbone.CompositeView
   render:->
     Slider.__super__.render.call @
     @$el.html @template @model.attributes if @template?
-    @$el.find('.bbui-slider-element').noUiSlider @getSliderOpts()
+    @$('.bbui-slider-element').noUiSlider @getSliderOpts()
   initialize:(o)->
     _.extend @model.attributes, @getSliderOpts o
     @template   = _.template _t if (clazz = Backbone.controls.Slider)? and typeof (_t = clazz.__template__) == 'string'

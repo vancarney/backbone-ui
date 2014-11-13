@@ -395,7 +395,7 @@
 	    if (this.template != null) {
 	      this.$el.html(this.template(this.model.attributes));
 	    }
-	    return this.$el.find('.bbui-slider-element').noUiSlider(this.getSliderOpts());
+	    return this.$('.bbui-slider-element').noUiSlider(this.getSliderOpts());
 	  };
 	
 	  Slider.prototype.initialize = function(o) {
