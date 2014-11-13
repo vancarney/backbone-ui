@@ -61,7 +61,7 @@ Backbone  = unless typeof exports is 'undefined' then require 'backbone' else gl
       @__children[sel] = clazz if typeof sel is 'string' and clazz instanceof Backbone.View
       @
     removeAllChildren:->
-      for sel in _.keys( @__children  )
+      for sel in _.keys( @subviews  )
         @$(sel).remove()
         delete @[sel]
         delete @__children[sel]

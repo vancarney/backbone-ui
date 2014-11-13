@@ -12,6 +12,7 @@
         <div id="slider"></div>
       </div>
     </div>
+    <a href="#" class="close-link">remove panel children</a>
     <script src="../bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
     <script src="../bower_components/underscore/underscore.js" type="text/javascript"></script>
     <script src="../bower_components/backbone/backbone.js" type="text/javascript"></script>
@@ -51,7 +52,7 @@
           return CtrlSlider;
         })(Backbone.controls.Slider);
         
-        var panel = new (Backbone.controls.Panel.extend({
+        window.panel = new (Backbone.controls.Panel.extend({
           subviews:{
            "#checkbox":global.CtrlCheckbox,
            "#slider":global.CtrlSlider
@@ -60,7 +61,10 @@
             this.model.set( {label:'New Label'} );
           }
         }))( {el:'.my-panel', title:'demo'} );
-        
+        $('.close-link').click(function() {
+          console.log(panel.removeAllChildren);
+          panel.removeAllChildren()
+        });
       })(jQuery);
     </script>
   </body>

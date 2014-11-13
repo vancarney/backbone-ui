@@ -123,7 +123,7 @@
 
       CompositeView.prototype.removeAllChildren = function() {
         var sel, _i, _len, _ref;
-        _ref = _.keys(this.__children);
+        _ref = _.keys(this.subviews);
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           sel = _ref[_i];
           this.$(sel).remove();
@@ -326,7 +326,7 @@
 	      this.$el.html(_tpl(((_ref1 = this.model) != null ? _ref1.attributes : void 0) != null ? this.model.attributes : {}));
 	    }
 	    if ((this.__content != null) && typeof this.__content === 'string') {
-	      this.$el.find('.panel-content').html(this.__content);
+	      this.$('.panel-content').html(this.__content);
 	    }
 	    return Panel.__super__.createChildren.call(this);
 	  };
@@ -340,6 +340,14 @@
 	  };
 	
 	  Panel.prototype.initialize = function(o) {
+	    var _o_subviews;
+	    _o_subviews = _.clone(this.subviews);
+	    this.subviews = {
+	      '.panel-header': Backbone.CompositeView,
+	      '.panel-content': Backbone.CompositeView.extend({
+	        subviews: _o_subviews
+	      })
+	    };
 	    this.__content = this.$el.children().html();
 	    this.$el.children().remove();
 	    return Panel.__super__.initialize.call(this, o);
