@@ -2641,7 +2641,7 @@ function closure ( target, options, originalOptions ){
 	    return Slider.__super__.constructor.apply(this, arguments);
 	  }
 	
-	  Slider.prototype.model = new (Backbone.Model.extend({
+	  Slider.prototype.modelClass = Backbone.Model.extend({
 	    defaults: {
 	      start: 50,
 	      range: {
@@ -2651,7 +2651,9 @@ function closure ( target, options, originalOptions ){
 	      label: '',
 	      classes: ''
 	    }
-	  }));
+	  });
+	
+	  Slider.prototype.model = null;
 	
 	  Slider.prototype.getSliderOpts = function(o) {
 	    return _.pick(o || this.model.attributes, 'start', 'range', 'connect', 'margin', 'limit', 'step', 'orientation', 'direction', 'animate');
@@ -2683,6 +2685,9 @@ function closure ( target, options, originalOptions ){
 	
 	  Slider.prototype.initialize = function(o) {
 	    var clazz, _t;
+	    if (this.model == null) {
+	      this.model = new this.modelClass;
+	    }
 	    _.extend(this.model.attributes, this.getSliderOpts(o));
 	    if (((clazz = Backbone.controls.Slider) != null) && typeof (_t = clazz.__template__) === 'string') {
 	      this.template = _.template(_t);

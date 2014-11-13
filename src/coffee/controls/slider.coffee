@@ -1,5 +1,5 @@
 class Backbone.controls.Slider extends Backbone.CompositeView
-  model: new (Backbone.Model.extend
+  modelClass: Backbone.Model.extend
     defaults:
       start:50
       range:
@@ -7,7 +7,7 @@ class Backbone.controls.Slider extends Backbone.CompositeView
         max:100
       label:''
       classes:''
-  )
+  model: null
   getSliderOpts:(o)->
      _.pick (o || @model.attributes), 'start', 'range', 'connect', 'margin', 'limit', 'step', 'orientation', 'direction', 'animate'
   events:
@@ -23,6 +23,7 @@ class Backbone.controls.Slider extends Backbone.CompositeView
     @$el.html @template @model.attributes if @template?
     @$('.bbui-slider-element').noUiSlider @getSliderOpts()
   initialize:(o)->
+    @model ?= new @modelClass
     _.extend @model.attributes, @getSliderOpts o
     @template   = _.template _t if (clazz = Backbone.controls.Slider)? and typeof (_t = clazz.__template__) == 'string'
     @model.on 'change', @render, @
