@@ -14,6 +14,7 @@ Backbone  = unless typeof exports is 'undefined' then require 'backbone' else gl
     __parent:   null
     subviews:{}
     createChildren:->
+      @removeAllChildren()
       if typeof @subviews != 'undefined' and @subviews? and _.isObject @subviews
         _.each @subviews, ((view, selector)=>
           return if typeof view == 'undefined'
@@ -56,6 +57,7 @@ Backbone  = unless typeof exports is 'undefined' then require 'backbone' else gl
           @__children.splice idx,1 if (idx = @__children.indexOf @[sel]) >= 0
           @[sel].remove()
           delete @[sel]
+          delete @subviews[sel]
       else
         throw 'param sel must be CSS Selector String'
       @

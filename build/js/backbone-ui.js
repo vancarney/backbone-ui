@@ -32,6 +32,7 @@
       CompositeView.prototype.subviews = {};
 
       CompositeView.prototype.createChildren = function() {
+        this.removeAllChildren();
         if (typeof this.subviews !== 'undefined' && (this.subviews != null) && _.isObject(this.subviews)) {
           _.each(this.subviews, ((function(_this) {
             return function(view, selector) {
@@ -114,6 +115,7 @@
             }
             this[sel].remove();
             delete this[sel];
+            delete this.subviews[sel];
           }
         } else {
           throw 'param sel must be CSS Selector String';
