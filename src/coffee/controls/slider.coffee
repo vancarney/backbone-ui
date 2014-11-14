@@ -1,4 +1,5 @@
 class Backbone.controls.Slider extends Backbone.CompositeView
+  ns:Backbone.controls
   modelClass: Backbone.Model.extend
     defaults:
       start:50
@@ -25,7 +26,7 @@ class Backbone.controls.Slider extends Backbone.CompositeView
   initialize:(o)->
     @model ?= new @modelClass
     _.extend @model.attributes, @getSliderOpts o
-    @template   = _.template _t if (clazz = Backbone.controls.Slider)? and typeof (_t = clazz.__template__) == 'string'
+    @template = _.template _t if typeof (_t = @ns[Fun.getConstructorName @]?.__template__ || Backbone.controls.Slider.__template__) is 'string'
     @model.on 'change', @render, @
     Slider.__super__.initialize.call @, o
 Backbone.controls.Slider.__template__ = """

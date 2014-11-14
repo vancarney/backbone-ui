@@ -7,7 +7,8 @@ Backbone  = unless typeof exports is 'undefined' then require 'backbone' else gl
 (($)->
   Backbone.controls = {}
   Backbone.interactions = {}
-  class Backbone.CompositeView extends Backbone.View 
+  class Backbone.CompositeView extends Backbone.View
+    ns:Backbone
     collection: null
     __children: []
     __parent:   null

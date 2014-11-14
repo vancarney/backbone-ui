@@ -1,4 +1,5 @@
 class Backbone.controls.Checkbox extends Backbone.View
+  ns:Backbone.controls
   __opts:
       classes:''
       label:''
@@ -13,7 +14,7 @@ class Backbone.controls.Checkbox extends Backbone.View
       return @$el.find('input').val()
   events:
     'change input':(evt)->
-      console.log $(evt.target).val()
+      @trigger 'change', @val()
     'click .checkbox-container':->
       (ckBx = @$el.find 'input[type="checkbox"]').val (val = if ckBx.val() is 'on' then 'off' else 'on')
       @$el.find('.checkbox-symbol')[if val is 'on' then 'addClass' else 'removeClass'] 'checkbox-on'
@@ -24,7 +25,7 @@ class Backbone.controls.Checkbox extends Backbone.View
   initialize:(opts={})->
     _.extend @__opts, opts.params
     @$el      = $(@el = opts.el) if opts.el
-    @template = _.template _t if (clazz = global[Fun.getConstructorName @] || Backbone.controls.Checkbox)? and typeof (_t = clazz.__template__) is 'string'
+    @template = _.template _t if (clazz = @ns[Fun.getConstructorName @] || Backbone.controls.Checkbox)? and typeof (_t = clazz.__template__) is 'string'
     @render()
 Backbone.controls.Checkbox.__template__ = """
 <span class="checkbox-container">

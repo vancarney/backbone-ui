@@ -2304,6 +2304,8 @@ function closure ( target, options, originalOptions ){
         return CompositeView.__super__.constructor.apply(this, arguments);
       }
 
+      CompositeView.prototype.ns = Backbone;
+
       CompositeView.prototype.collection = null;
 
       CompositeView.prototype.__children = [];
@@ -2488,6 +2490,8 @@ function closure ( target, options, originalOptions ){
 	    return Checkbox.__super__.constructor.apply(this, arguments);
 	  }
 	
+	  Checkbox.prototype.ns = Backbone.controls;
+	
 	  Checkbox.prototype.__opts = {
 	    classes: '',
 	    label: '',
@@ -2507,7 +2511,7 @@ function closure ( target, options, originalOptions ){
 	
 	  Checkbox.prototype.events = {
 	    'change input': function(evt) {
-	      return console.log($(evt.target).val());
+	      return this.trigger('change', this.val());
 	    },
 	    'click .checkbox-container': function() {
 	      var ckBx, val;
@@ -2531,7 +2535,7 @@ function closure ( target, options, originalOptions ){
 	    if (opts.el) {
 	      this.$el = $(this.el = opts.el);
 	    }
-	    if (((clazz = global[Fun.getConstructorName(this)] || Backbone.controls.Checkbox) != null) && typeof (_t = clazz.__template__) === 'string') {
+	    if (((clazz = this.ns[Fun.getConstructorName(this)] || Backbone.controls.Checkbox) != null) && typeof (_t = clazz.__template__) === 'string') {
 	      this.template = _.template(_t);
 	    }
 	    return this.render();
@@ -2549,6 +2553,8 @@ function closure ( target, options, originalOptions ){
 	  function Panel() {
 	    return Panel.__super__.constructor.apply(this, arguments);
 	  }
+	
+	  Panel.prototype.ns = Backbone.controls;
 	
 	  Panel.prototype.model = new (Backbone.Model.extend({
 	    defaults: {
@@ -2602,7 +2608,7 @@ function closure ( target, options, originalOptions ){
 	
 	  Panel.prototype.createChildren = function() {
 	    var _ref, _ref1, _t, _tpl;
-	    if (typeof (_t = ((_ref = Fun.getConstructorName(this)) != null ? _ref.__template__ : void 0) || Backbone.controls.Panel.__template__) === 'string') {
+	    if (typeof (_t = ((_ref = this.ns[Fun.getConstructorName(this)]) != null ? _ref.__template__ : void 0) || Backbone.controls.Panel.__template__) === 'string') {
 	      _tpl = _.template(_t);
 	    }
 	    if (_tpl) {
@@ -2649,6 +2655,8 @@ function closure ( target, options, originalOptions ){
 	    return Slider.__super__.constructor.apply(this, arguments);
 	  }
 	
+	  Slider.prototype.ns = Backbone.controls;
+	
 	  Slider.prototype.modelClass = Backbone.Model.extend({
 	    defaults: {
 	      start: 50,
@@ -2692,12 +2700,12 @@ function closure ( target, options, originalOptions ){
 	  };
 	
 	  Slider.prototype.initialize = function(o) {
-	    var clazz, _t;
+	    var _ref, _t;
 	    if (this.model == null) {
 	      this.model = new this.modelClass;
 	    }
 	    _.extend(this.model.attributes, this.getSliderOpts(o));
-	    if (((clazz = Backbone.controls.Slider) != null) && typeof (_t = clazz.__template__) === 'string') {
+	    if (typeof (_t = ((_ref = this.ns[Fun.getConstructorName(this)]) != null ? _ref.__template__ : void 0) || Backbone.controls.Slider.__template__) === 'string') {
 	      this.template = _.template(_t);
 	    }
 	    this.model.on('change', this.render, this);

@@ -1,4 +1,5 @@
 class Backbone.controls.Panel extends Backbone.CompositeView
+  ns:Backbone.controls
   model: new (Backbone.Model.extend
     defaults:
       title:'Panel'
@@ -25,7 +26,7 @@ class Backbone.controls.Panel extends Backbone.CompositeView
   removeAllChildren:->
     @['.panel-content']?.removeAllChildren()
   createChildren:->
-    if typeof (_t = (Fun.getConstructorName @)?.__template__ || Backbone.controls.Panel.__template__) is 'string'
+    if typeof (_t = @ns[Fun.getConstructorName @]?.__template__ || Backbone.controls.Panel.__template__) is 'string'
       _tpl = _.template _t
     @$el.html _tpl( if @model?.attributes? then @model.attributes else {} ) if _tpl
     @$('.panel-content').html @__content if @__content? and typeof @__content is 'string'
