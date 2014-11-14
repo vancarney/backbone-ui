@@ -2730,7 +2730,9 @@ function closure ( target, options, originalOptions ){
 	  Tooltip.prototype.modelClass = Backbone.Model.extend({
 	    defaults: {
 	      classes: '',
-	      text: ''
+	      text: '',
+	      top: 0,
+	      left: 0
 	    }
 	  });
 	
@@ -2747,27 +2749,45 @@ function closure ( target, options, originalOptions ){
 	    }
 	  };
 	
-	  Tooltip.prototype.events = {
-	    'mouseout': function() {
-	      return this.$el.remove();
-	    }
-	  };
-	
 	  Tooltip.prototype.render = function() {
-	    if (this.$el != null) {
-	      this.$el.remove();
-	    }
-	    $('body').append(this.$el = $(this.template(this.model.attributes)));
+	    var pos;
+	    this.remove();
+	    this.el = (this.$el = $(this.template(this.model.attributes))).get();
+	    pos = _.pick(this.model.attributes, 'top', 'left');
+	    $('body').append(this.$el);
+	    this.$el.css({
+	      top: (pos.top - (this.$el.height() * 2)) - 6,
+	      left: pos.left
+	    });
 	    this.delegateEvents();
 	    return this;
 	  };
 	
+	  Tooltip.prototype.remove = function() {
+	    return $('.tooltip-container').remove();
+	  };
+	
+	  Tooltip.prototype.destroy = function() {
+	    this.remove();
+	    return this.$target.off('mouseout');
+	  };
+	
 	  Tooltip.prototype.initialize = function(target, opts) {
 	    var clazz, _t;
+	    if (opts == null) {
+	      opts = {};
+	    }
 	    if (target == null) {
 	      return;
 	    }
-	    this.$target = target;
+	    (this.$target = target).on('mouseout', (function(_this) {
+	      return function() {
+	        return _this.destroy();
+	      };
+	    })(this));
+	    if (!((opts.top != null) || (opts.left != null))) {
+	      _.extend(opts, _.pick(this.$target.position(), 'top', 'left'));
+	    }
 	    (this.model = new this.modelClass(opts)).on('change', this.render, this);
 	    if (((clazz = this.ns[Fun.getConstructorName(this)] || Backbone.controls.Tooltip) != null) && typeof (_t = clazz.__template__) === 'string') {
 	      this.template = _.template(_t);

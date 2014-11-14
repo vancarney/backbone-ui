@@ -4,6 +4,8 @@ class Backbone.controls.Tooltip extends Backbone.View
     defaults:
       classes:''
       text:''
+      top: 0
+      left: 0
   model:null
   text:(val)->
     if val?
@@ -11,16 +13,23 @@ class Backbone.controls.Tooltip extends Backbone.View
       return @
     else
       return model.get 'text'
-  events:
-    'mouseout':-> @$el.remove()
   render:->
-    @$el.remove() if @$el?
-    $('body').append @$el = $ @template @model.attributes
+    @remove()
+    @el = (@$el = $ @template @model.attributes).get()
+    pos = _.pick @model.attributes, 'top', 'left'
+    $('body').append @$el
+    @$el.css top:(pos.top - (@$el.height()*2)) - 6, left:pos.left
     @delegateEvents()
     @
-  initialize:(target,opts)->
+  remove:->
+    $('.tooltip-container').remove()
+  destroy:->
+    @remove()
+    @$target.off 'mouseout'
+  initialize:(target,opts={})->
     return unless target?
-    @$target = target
+    (@$target = target).on 'mouseout', => @destroy()
+    _.extend opts, _.pick @$target.position(), 'top', 'left' unless opts.top? or opts.left?
     (@model = new @modelClass opts).on 'change', @render, @
     @template = _.template _t if (clazz = @ns[Fun.getConstructorName @] || Backbone.controls.Tooltip)? and typeof (_t = clazz.__template__) is 'string'
     @render()
