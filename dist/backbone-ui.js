@@ -2492,13 +2492,17 @@ function closure ( target, options, originalOptions ){
 	
 	  Checkbox.prototype.ns = Backbone.controls;
 	
-	  Checkbox.prototype.__opts = {
-	    classes: '',
-	    label: '',
-	    id: '',
-	    name: '',
-	    checked: false
-	  };
+	  Checkbox.prototype.__props = null;
+	
+	  Checkbox.prototype.propsClass = Backbone.Model.extend({
+	    defaults: {
+	      classes: '',
+	      label: '',
+	      id: '',
+	      name: '',
+	      checked: false
+	    }
+	  });
 	
 	  Checkbox.prototype.val = function(val) {
 	    if (val != null) {
@@ -2521,7 +2525,7 @@ function closure ( target, options, originalOptions ){
 	  };
 	
 	  Checkbox.prototype.render = function() {
-	    this.$el.html(this.template(this.__opts));
+	    this.$el.html(this.template(this.__props.attributes));
 	    this.delegateEvents();
 	    return this;
 	  };
@@ -2531,7 +2535,9 @@ function closure ( target, options, originalOptions ){
 	    if (opts == null) {
 	      opts = {};
 	    }
-	    _.extend(this.__opts, opts.params);
+	    if (this.__props == null) {
+	      this.__props = new this.propsClass(opts.params || {});
+	    }
 	    if (opts.el) {
 	      this.$el = $(this.el = opts.el);
 	    }
