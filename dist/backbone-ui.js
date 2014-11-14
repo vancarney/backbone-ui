@@ -2386,13 +2386,17 @@ function closure ( target, options, originalOptions ){
       };
 
       CompositeView.prototype.removeChild = function(sel, opts) {
+        var idx;
         if (!sel) {
           return;
         }
         if (typeof sel === 'string') {
-          if (this.__children[sel] != null) {
-            this.__children[sel].remove();
-            delete this.__children[sel];
+          if (this[sel] != null) {
+            if ((idx = this.__children.indexOf(this[sel])) >= 0) {
+              this.__children.splice(idx, 1);
+            }
+            this[sel].remove();
+            delete this[sel];
           }
         } else {
           throw 'param sel must be CSS Selector String';
@@ -2401,12 +2405,17 @@ function closure ( target, options, originalOptions ){
       };
 
       CompositeView.prototype.replaceChild = function(sel, clazz) {
+        var idx, _oC;
         if (!((sel != null) && typeof sel === 'string')) {
           throw 'param sel must be CSS Selector String';
         }
-        if (typeof sel === 'string' && clazz instanceof Backbone.View) {
-          this.__children[sel] = clazz;
+        if (!(clazz instanceof Backbone.View)) {
+          throw 'param clazz must be Backbone.View';
         }
+        if ((idx = this.__children.indexOf(_oC = this[sel])) >= 0) {
+          this.__children.splice(idx, 1);
+        }
+        this.__children[clazz] = this[sel] = clazz;
         return this;
       };
 
@@ -2415,9 +2424,7 @@ function closure ( target, options, originalOptions ){
         _ref = _.keys(this.subviews);
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           sel = _ref[_i];
-          this.$(sel).remove();
-          delete this[sel];
-          delete this.__children[sel];
+          this.removeChild(sel);
         }
         return this;
       };

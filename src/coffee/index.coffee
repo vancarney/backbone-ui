@@ -52,21 +52,22 @@ Backbone  = unless typeof exports is 'undefined' then require 'backbone' else gl
     removeChild:(sel,opts)->
       return unless sel
       if typeof sel is 'string'
-        if @__children[sel]?
-          @__children[sel].remove()
-          delete @__children[sel]
+        if @[sel]?
+          @__children.splice idx,1 if (idx = @__children.indexOf @[sel]) >= 0
+          @[sel].remove()
+          delete @[sel]
       else
         throw 'param sel must be CSS Selector String'
       @
     replaceChild:(sel,clazz)->
       return throw 'param sel must be CSS Selector String' unless sel? and typeof sel is 'string'
-      @__children[sel] = clazz if typeof sel is 'string' and clazz instanceof Backbone.View
+      return throw 'param clazz must be Backbone.View' unless clazz instanceof Backbone.View
+      @__children.splice idx,1 if (idx = @__children.indexOf _oC = @[sel]) >= 0
+      @__children[clazz] = @[sel] = clazz 
       @
     removeAllChildren:->
       for sel in _.keys( @subviews  )
-        @$(sel).remove()
-        delete @[sel]
-        delete @__children[sel]
+        @removeChild sel
       @
     childrenComplete:->
       @
