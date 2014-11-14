@@ -1,11 +1,10 @@
 class Backbone.controls.Panel extends Backbone.CompositeView
   ns:Backbone.controls
-  model: new (Backbone.Model.extend
+  modelClass: Backbone.Model.extend
     defaults:
       title:'Panel'
       collapsable:false
       minified:false
-  )
   events:
     'click .panel-header .help': ->
     'click .panel-header .close': ->
@@ -36,10 +35,10 @@ class Backbone.controls.Panel extends Backbone.CompositeView
     @$el.draggable handle:'.panel-header'
     @
   initialize:(o)->
-    _o_subviews = _.clone @subviews
+    @model ?= new @modelClass
     @subviews = 
       '.panel-header':Backbone.CompositeView
-      '.panel-content':Backbone.CompositeView.extend subviews: _o_subviews
+      '.panel-content':Backbone.CompositeView.extend subviews: _.clone @subviews
     @__content =  @$el.children().html()
     @$el.children().remove()
     Panel.__super__.initialize.call @, o

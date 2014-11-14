@@ -273,13 +273,13 @@
 	
 	  Panel.prototype.ns = Backbone.controls;
 	
-	  Panel.prototype.model = new (Backbone.Model.extend({
+	  Panel.prototype.modelClass = Backbone.Model.extend({
 	    defaults: {
 	      title: 'Panel',
 	      collapsable: false,
 	      minified: false
 	    }
-	  }));
+	  });
 	
 	  Panel.prototype.events = {
 	    'click .panel-header .help': function() {},
@@ -346,12 +346,13 @@
 	  };
 	
 	  Panel.prototype.initialize = function(o) {
-	    var _o_subviews;
-	    _o_subviews = _.clone(this.subviews);
+	    if (this.model == null) {
+	      this.model = new this.modelClass;
+	    }
 	    this.subviews = {
 	      '.panel-header': Backbone.CompositeView,
 	      '.panel-content': Backbone.CompositeView.extend({
-	        subviews: _o_subviews
+	        subviews: _.clone(this.subviews)
 	      })
 	    };
 	    this.__content = this.$el.children().html();
