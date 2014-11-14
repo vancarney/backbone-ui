@@ -17,16 +17,16 @@ class Backbone.controls.Checkbox extends Backbone.View
   events:
     'change input':(evt)->
       @trigger 'change', @val()
-    'click .checkbox-container':->
-      (ckBx = @$el.find 'input[type="checkbox"]').val (val = if ckBx.val() is 'on' then 'off' else 'on')
-      @$el.find('.checkbox-symbol')[if val is 'on' then 'addClass' else 'removeClass'] 'checkbox-on'
+    'click .checkbox-container':(evt)->
+      evt.stopPropagation();
+      evt.preventDefault();
+      (ckBx = @$ 'input[type="checkbox"]').val(val = if ckBx.val() is 'on' then 'off' else 'on').trigger 'change'
+      @$('.checkbox-symbol')[if val is 'on' then 'addClass' else 'removeClass'] 'checkbox-on'
   render:->
-    @$el.html @template @__props.attributes
-    @delegateEvents()
+    @$el.children().remove().end().html @template @__props.attributes
     @
   initialize:(opts={})->
-    @__props ?= new @propsClass  opts.params || {}
-    @$el      = $(@el = opts.el) if opts.el
+    @__props ?= new @propsClass  opts.params || null
     @template = _.template _t if (clazz = @ns[Fun.getConstructorName @] || Backbone.controls.Checkbox)? and typeof (_t = clazz.__template__) is 'string'
     @render()
 Backbone.controls.Checkbox.__template__ = """

@@ -29,6 +29,7 @@ Backbone  = unless typeof exports is 'undefined' then require 'backbone' else gl
     getElement:->
       @$el
     setElement:(el)->
+      @$el?.remove()
       @$el = $(@el = el) if el
       @delegateEvents()
       @
@@ -70,7 +71,6 @@ Backbone  = unless typeof exports is 'undefined' then require 'backbone' else gl
     childrenComplete:->
       @
     initialize:(o)->
-      @setElement o.el if o? and o.el
       @setCollection o.collection if o? and o.collection
       @__parent = o.__parent if o? and o.__parent
       if typeof @init == 'function'

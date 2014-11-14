@@ -57,6 +57,10 @@
       };
 
       CompositeView.prototype.setElement = function(el) {
+        var _ref;
+        if ((_ref = this.$el) != null) {
+          _ref.remove();
+        }
         if (el) {
           this.$el = $(this.el = el);
         }
@@ -140,9 +144,6 @@
       };
 
       CompositeView.prototype.initialize = function(o) {
-        if ((o != null) && o.el) {
-          this.setElement(o.el);
-        }
         if ((o != null) && o.collection) {
           this.setCollection(o.collection);
         }
@@ -234,16 +235,17 @@
 	    'change input': function(evt) {
 	      return this.trigger('change', this.val());
 	    },
-	    'click .checkbox-container': function() {
+	    'click .checkbox-container': function(evt) {
 	      var ckBx, val;
-	      (ckBx = this.$el.find('input[type="checkbox"]')).val((val = ckBx.val() === 'on' ? 'off' : 'on'));
-	      return this.$el.find('.checkbox-symbol')[val === 'on' ? 'addClass' : 'removeClass']('checkbox-on');
+	      evt.stopPropagation();
+	      evt.preventDefault();
+	      (ckBx = this.$('input[type="checkbox"]')).val(val = ckBx.val() === 'on' ? 'off' : 'on').trigger('change');
+	      return this.$('.checkbox-symbol')[val === 'on' ? 'addClass' : 'removeClass']('checkbox-on');
 	    }
 	  };
 	
 	  Checkbox.prototype.render = function() {
-	    this.$el.html(this.template(this.__props.attributes));
-	    this.delegateEvents();
+	    this.$el.children().remove().end().html(this.template(this.__props.attributes));
 	    return this;
 	  };
 	
@@ -253,10 +255,7 @@
 	      opts = {};
 	    }
 	    if (this.__props == null) {
-	      this.__props = new this.propsClass(opts.params || {});
-	    }
-	    if (opts.el) {
-	      this.$el = $(this.el = opts.el);
+	      this.__props = new this.propsClass(opts.params || null);
 	    }
 	    if (((clazz = this.ns[Fun.getConstructorName(this)] || Backbone.controls.Checkbox) != null) && typeof (_t = clazz.__template__) === 'string') {
 	      this.template = _.template(_t);
