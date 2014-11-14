@@ -64,6 +64,8 @@
         $('.close-link').click(function() {
           console.log(panel.removeAllChildren);
           panel.removeAllChildren()
+        }).mouseover(function(evt) {
+          new Backbone.controls.Tooltip($(evt.target),{text:"Tooltips are swell"});
         });
       })(jQuery);
     </script>

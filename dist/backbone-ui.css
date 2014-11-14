@@ -50,3 +50,27 @@
   visibility: hidden;
   width: 0;
 }
+.tooltip-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 8px;
+  background-color: #fff;
+  border: #ccc 1px solid;
+  border-radius: 8px;
+  color: #666;
+  font-size: 12pt;
+  font-weight: 200;
+  font-family: Helvetica, Arial, sans-serif;
+}
+.tooltip-container .tooltip-notch {
+  bottom: -5px;
+  position: absolute;
+  display: block;
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  border-right: #ccc 1px solid;
+  border-bottom: #ccc 1px solid;
+  transform: rotate(45deg);
+}

@@ -3,6 +3,7 @@
     "src/coffee/interactions.coffee",
     "src/coffee/controls/checkbox.coffee",
     "src/coffee/controls/panel.coffee",
-    "src/coffee/controls/slider.coffee"
+    "src/coffee/controls/slider.coffee",
+    "src/coffee/controls/tooltip.coffee"
   ]
 }

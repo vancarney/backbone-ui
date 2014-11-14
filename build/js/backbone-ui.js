@@ -435,6 +435,69 @@
 	
 	Backbone.controls.Slider.__template__ = "<div class=\"bbui-slider <%=classes || ''%>\">\n  <span class=\"label\"><%=label%></span>\n  <div class=\"bbui-slider-element\"></div>\n</div>";
 	
+	Backbone.controls.Tooltip = (function(_super) {
+	  __extends(Tooltip, _super);
+	
+	  function Tooltip() {
+	    return Tooltip.__super__.constructor.apply(this, arguments);
+	  }
+	
+	  Tooltip.prototype.ns = Backbone.controls;
+	
+	  Tooltip.prototype.modelClass = Backbone.Model.extend({
+	    defaults: {
+	      classes: '',
+	      text: ''
+	    }
+	  });
+	
+	  Tooltip.prototype.model = null;
+	
+	  Tooltip.prototype.text = function(val) {
+	    if (val != null) {
+	      model.set({
+	        text: val
+	      });
+	      return this;
+	    } else {
+	      return model.get('text');
+	    }
+	  };
+	
+	  Tooltip.prototype.events = {
+	    'mouseout': function() {
+	      return this.$el.remove();
+	    }
+	  };
+	
+	  Tooltip.prototype.render = function() {
+	    if (this.$el != null) {
+	      this.$el.remove();
+	    }
+	    $('body').append(this.$el = $(this.template(this.model.attributes)));
+	    this.delegateEvents();
+	    return this;
+	  };
+	
+	  Tooltip.prototype.initialize = function(target, opts) {
+	    var clazz, _t;
+	    if (target == null) {
+	      return;
+	    }
+	    this.$target = target;
+	    (this.model = new this.modelClass(opts)).on('change', this.render, this);
+	    if (((clazz = this.ns[Fun.getConstructorName(this)] || Backbone.controls.Tooltip) != null) && typeof (_t = clazz.__template__) === 'string') {
+	      this.template = _.template(_t);
+	    }
+	    return this.render();
+	  };
+	
+	  return Tooltip;
+	
+	})(Backbone.View);
+	
+	Backbone.controls.Tooltip.__template__ = "<div class=\"tooltip-container\">\n  <span class=\"tooltip-text <%= classes || ''%>\"><%=text %></span>\n  <div class=\"tooltip-notch\"></div>\n</div>";
+	
     return true;
   })(jQuery);
 
