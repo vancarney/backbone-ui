@@ -10,10 +10,10 @@ class Backbone.controls.Panel extends Backbone.CompositeView
       @$el.parent().remove @$el
       @trigger 'closed'
     'click .panel-header .expand': ->
-      @$el.removeClass 'bbui-panel-collapsed'
+      @$el.removeClass 'panel-collapsed'
       @trigger 'expanded'
     'click .panel-header .collapse': ->
-      @$el.addClass 'bbui-panel-collapsed'
+      @$el.addClass 'panel-collapsed'
       @trigger 'collapsed'
   getCollection:->
     @['.panel-content']?.getCollection()

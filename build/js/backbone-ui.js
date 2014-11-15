@@ -303,11 +303,11 @@
 	      return this.trigger('closed');
 	    },
 	    'click .panel-header .expand': function() {
-	      this.$el.removeClass('bbui-panel-collapsed');
+	      this.$el.removeClass('panel-collapsed');
 	      return this.trigger('expanded');
 	    },
 	    'click .panel-header .collapse': function() {
-	      this.$el.addClass('bbui-panel-collapsed');
+	      this.$el.addClass('panel-collapsed');
 	      return this.trigger('collapsed');
 	    }
 	  };

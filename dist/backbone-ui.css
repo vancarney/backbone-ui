@@ -28,7 +28,7 @@
   min-height: 180px;
   background: #ccc;
 }
-.bbui-panel-container .collapsed .panel-content {
+.bbui-panel-container .panel-collapsed .panel-content {
   display: none;
 }
 .checkbox-on:after {
