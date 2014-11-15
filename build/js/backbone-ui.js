@@ -298,10 +298,18 @@
 	  });
 	
 	  Panel.prototype.events = {
-	    'click .panel-header .help': function() {},
-	    'click .panel-header .close': function() {},
-	    'click .panel-header .expand': function() {},
-	    'click .panel-header .collapse': function() {}
+	    'click .panel-header .close': function() {
+	      this.$el.parent().remove(this.$el);
+	      return this.trigger('closed');
+	    },
+	    'click .panel-header .expand': function() {
+	      this.$el.removeClass('bbui-panel-collapsed');
+	      return this.trigger('expanded');
+	    },
+	    'click .panel-header .collapse': function() {
+	      this.$el.addClass('bbui-panel-collapsed');
+	      return this.trigger('collapsed');
+	    }
 	  };
 	
 	  Panel.prototype.getCollection = function() {
@@ -371,6 +379,7 @@
 	        subviews: _.clone(this.subviews)
 	      })
 	    };
+	    this.events = _.extend({}, Panel.prototype.events, this.events);
 	    this.__content = this.$el.children().html();
 	    this.$el.children().remove();
 	    return Panel.__super__.initialize.call(this, o);

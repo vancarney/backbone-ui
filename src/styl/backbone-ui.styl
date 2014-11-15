@@ -1,20 +1,24 @@
 .bbui-panel-container
   position absolute
-  margin 0 0 !important
+  margin 0 0
   min-width 180px
   border 1px #666 solid
-  .panel-header
+  > div
     position relative
-    min-height 18px
     margin 0 0 0 0
+    padding 3px 6px
+  .panel-header
+    font-size 10px
+    font-weight 400
+    min-height 18px
     background #fff
     cursor move
   .panel-content
-    position relative
     min-height 180px
-    margin 0 0 0 0
     background #ccc
-    padding 6px
+  .collapsed
+    .panel-content
+      display none
 
 .checkbox-on:after
   content "\2713"

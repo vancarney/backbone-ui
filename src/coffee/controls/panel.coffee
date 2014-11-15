@@ -6,10 +6,15 @@ class Backbone.controls.Panel extends Backbone.CompositeView
       collapsable:false
       minified:false
   events:
-    'click .panel-header .help': ->
     'click .panel-header .close': ->
+      @$el.parent().remove @$el
+      @trigger 'closed'
     'click .panel-header .expand': ->
+      @$el.removeClass 'bbui-panel-collapsed'
+      @trigger 'expanded'
     'click .panel-header .collapse': ->
+      @$el.addClass 'bbui-panel-collapsed'
+      @trigger 'collapsed'
   getCollection:->
     @['.panel-content']?.getCollection()
   setCollection:(c)->
@@ -39,6 +44,7 @@ class Backbone.controls.Panel extends Backbone.CompositeView
     @subviews = 
       '.panel-header':Backbone.CompositeView
       '.panel-content':Backbone.CompositeView.extend subviews: _.clone @subviews
+    @events = _.extend {}, Panel.prototype.events, @events
     @__content =  @$el.children().html()
     @$el.children().remove()
     Panel.__super__.initialize.call @, o
