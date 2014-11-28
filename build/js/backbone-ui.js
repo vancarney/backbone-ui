@@ -54,7 +54,8 @@
         })(this)));
         this.delegateEvents();
       }
-      return this.childrenComplete();
+      this.childrenComplete();
+      return this;
     };
 
     CompositeView.prototype.getElement = function() {

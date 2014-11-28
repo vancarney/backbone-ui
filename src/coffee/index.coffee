@@ -27,6 +27,7 @@ class Backbone.CompositeView extends Backbone.View
       )
       @delegateEvents()
     @childrenComplete()
+    @
   getElement:->
     @$el
   setElement:(el)->
