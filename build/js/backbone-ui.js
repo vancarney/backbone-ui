@@ -32,6 +32,10 @@
 
     CompositeView.prototype.subviews = {};
 
+    CompositeView.prototype.render = function() {
+      return this.createChildren();
+    };
+
     CompositeView.prototype.createChildren = function() {
       this.removeAllChildren();
       if (typeof this.subviews !== 'undefined' && (this.subviews != null) && _.isObject(this.subviews)) {
@@ -50,8 +54,7 @@
         })(this)));
         this.delegateEvents();
       }
-      this.childrenComplete();
-      return this.render();
+      return this.childrenComplete();
     };
 
     CompositeView.prototype.getElement = function() {
@@ -167,7 +170,7 @@
           this.init();
         }
       }
-      return this.createChildren();
+      return this.render();
     };
 
     return CompositeView;

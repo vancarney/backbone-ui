@@ -2315,6 +2315,10 @@ function closure ( target, options, originalOptions ){
 
     CompositeView.prototype.subviews = {};
 
+    CompositeView.prototype.render = function() {
+      return this.createChildren();
+    };
+
     CompositeView.prototype.createChildren = function() {
       this.removeAllChildren();
       if (typeof this.subviews !== 'undefined' && (this.subviews != null) && _.isObject(this.subviews)) {
@@ -2333,8 +2337,7 @@ function closure ( target, options, originalOptions ){
         })(this)));
         this.delegateEvents();
       }
-      this.childrenComplete();
-      return this.render();
+      return this.childrenComplete();
     };
 
     CompositeView.prototype.getElement = function() {
@@ -2450,7 +2453,7 @@ function closure ( target, options, originalOptions ){
           this.init();
         }
       }
-      return this.createChildren();
+      return this.render();
     };
 
     return CompositeView;

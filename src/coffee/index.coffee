@@ -12,6 +12,8 @@ class Backbone.CompositeView extends Backbone.View
   __children: []
   __parent:   null
   subviews:{}
+  render:->
+    @createChildren()
   createChildren:->
     @removeAllChildren()
     if typeof @subviews != 'undefined' and @subviews? and _.isObject @subviews
@@ -25,7 +27,6 @@ class Backbone.CompositeView extends Backbone.View
       )
       @delegateEvents()
     @childrenComplete()
-    @render()
   getElement:->
     @$el
   setElement:(el)->
@@ -76,6 +77,6 @@ class Backbone.CompositeView extends Backbone.View
     @setCollection o.collection if o? and o.collection
     @__parent = o.__parent if o? and o.__parent
     if typeof @init == 'function'
-      if o? then @init o else @init() 
-    @createChildren()
+      if o? then @init o else @init()
+    @render()
 '{{classes}}'
