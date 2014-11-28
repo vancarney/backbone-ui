@@ -9,12 +9,13 @@ class Backbone.controls.Panel extends Backbone.CompositeView
     'click .panel-header .close': ->
       @$el.parent().remove @$el
       @trigger 'closed'
-    'click .panel-header .expand': ->
-      @$el.removeClass 'panel-collapsed'
-      @trigger 'expanded'
     'click .panel-header .collapse': ->
-      @$el.addClass 'panel-collapsed'
-      @trigger 'collapsed'
+      if @$el.hasClass 'panel-collapsed'
+        @$el.removeClass 'panel-collapsed'
+        @trigger 'expanded'
+      else
+        @$el.addClass 'panel-collapsed'
+        @trigger 'collapsed'
   getCollection:->
     @['.panel-content']?.getCollection()
   setCollection:(c)->
