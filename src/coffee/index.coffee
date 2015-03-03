@@ -32,7 +32,7 @@ class Backbone.CompositeView extends Backbone.View
         else
           clazz = view
         _.each (@$el.find selector), (v,k)=>
-          @__children.push @[selector] = new view _.extend params, {el: v, __parent:@}
+          @__children.push @[selector] = new clazz _.extend params, {el: v, __parent:@}
       )
       @delegateEvents()
     @childrenComplete()

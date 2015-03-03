@@ -56,7 +56,7 @@
               clazz = view;
             }
             return _.each(_this.$el.find(selector), function(v, k) {
-              return _this.__children.push(_this[selector] = new view(_.extend(params, {
+              return _this.__children.push(_this[selector] = new clazz(_.extend(params, {
                 el: v,
                 __parent: _this
               })));
