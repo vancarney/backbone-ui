@@ -14,16 +14,25 @@ class Backbone.CompositeView extends Backbone.View
   subviews:{}
   render:->
     @createChildren()
+  ## createChildren
+  # > traverses subviews hash, defining any view classes upon DOM elements
+  # subviews hash may be defined as follos:
+  # a simple hash: `{'hashKey':ViewClass}`
+  # a nested hash: `{'hashKey':{viewClass:ViewClass, param1:val1, param2:val2 ...}}`
   createChildren:->
     @removeAllChildren()
     if typeof @subviews != 'undefined' and @subviews? and _.isObject @subviews
       _.each @subviews, ((view, selector)=>
         return if typeof view == 'undefined'
+        params = {}
+        if typeof view is 'object'
+          return unless (clazz = view.viewClass)?
+          delete view.viewClass
+          _.extend params, view
+        else
+          clazz = view
         _.each (@$el.find selector), (v,k)=>
-          @__children.push (@[selector] = new view
-            el: v
-            __parent:@
-          )
+          @__children.push @[selector] = new view _.extend params, {el: v, __parent:@}
       )
       @delegateEvents()
     @childrenComplete()
