@@ -86,15 +86,27 @@
     };
 
     CompositeView.prototype.setCollection = function(c) {
-      if (this.__collection) {
-        this.__collection.off("change reset add remove");
+      if (this.collection) {
+        this.collection.off("change reset add remove");
       }
-      (this.__collection = c).on("change reset add remove", this.render, this);
+      (this.collection = c).on("change reset add remove", this.render, this);
       return this;
     };
 
     CompositeView.prototype.getCollection = function() {
-      return this.__collection;
+      return this.collection;
+    };
+
+    CompositeView.prototype.setModel = function(c) {
+      if (this.model) {
+        this.model.off("change reset");
+      }
+      (this.model = c).on("change reset", this.render, this);
+      return this;
+    };
+
+    CompositeView.prototype.getModel = function() {
+      return this.model;
     };
 
     CompositeView.prototype.getChildren = function() {
@@ -169,8 +181,12 @@
     };
 
     CompositeView.prototype.initialize = function(o) {
-      if ((o != null) && o.collection) {
-        this.setCollection(o.collection);
+      var _ref, _ref1;
+      if ((_ref = this.model) != null) {
+        _ref.on("change reset", this.render, this);
+      }
+      if ((_ref1 = this.collection) != null) {
+        _ref1.on("change reset add remove", this.render, this);
       }
       if ((o != null) && o.__parent) {
         this.__parent = o.__parent;

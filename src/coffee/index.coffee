@@ -45,11 +45,17 @@ class Backbone.CompositeView extends Backbone.View
     @delegateEvents()
     @
   setCollection:(c)->
-    @__collection.off "change reset add remove" if @__collection
-    (@__collection = c).on "change reset add remove", @render, @
+    @collection.off "change reset add remove" if @collection
+    (@collection = c).on "change reset add remove", @render, @
     @
   getCollection:->
-    @__collection
+    @collection
+  setModel:(c)->
+    @model.off "change reset" if @model
+    (@model = c).on "change reset", @render, @
+    @
+  getModel:->
+    @model
   getChildren:->
     @__children
   getChild:(sel)->
@@ -84,7 +90,8 @@ class Backbone.CompositeView extends Backbone.View
   childrenComplete:->
     @
   initialize:(o)->
-    @setCollection o.collection if o? and o.collection
+    @model?.on "change reset", @render, @
+    @collection?.on "change reset add remove", @render, @
     @__parent = o.__parent if o? and o.__parent
     if typeof @init == 'function'
       if o? then @init o else @init()
