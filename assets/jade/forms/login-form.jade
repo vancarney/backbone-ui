@@ -1,0 +1,14 @@
+form.col-xs-12.col-md-6.col-md-offset-3(role="form")
+  .row
+    .alert.alert-success.hidden(data-alert="")
+      span
+      a.close(href="#") &#215;
+    .alert.alert-danger.hidden(data-alert="")
+      span
+      a.close(href="#") &#215;
+  .form-group
+    input.form-control.bottom-space(type="email", name="email", placeholder="email address")
+  .form-group
+    input.form-control(type="password", name="password", placeholder="password")
+  .form-group.form-buttons
+    button.btn.btn-primary.btn-lg.active(name="submit", type="button") submit

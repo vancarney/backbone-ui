@@ -23,19 +23,11 @@ catch err
 # paths object for module invocation reference
 paths={
   "coffee": [
-    "build",
-    "src/coffee"
-  ],
-  "styl": [
-    "dist",
-    "src/styl"
-  ],
-  "uglify": [
-    "dist/js"
-  ],
+    "lib",
+    "src"
+  ]
 }
 
-manifest = require './src/manifest.coffee.json'
 
 # file extensions for watching
 exts='coffee|jade'
@@ -43,25 +35,13 @@ exts='coffee|jade'
 # Callback From 'coffee'
 coffeeCallback=()->
   console.log arguments if arguments[0]?
-  inc = """
-  //= require nouislider/distribute/jquery.nouislider.all
-  """
-  _t = _.template fs.readFileSync '/tmp/index.js', 'utf8'
-  js = _t {classes:(str = fs.readFileSync '/tmp/classes.js', 'utf8').substr(str.indexOf('\n\n')+1, str.length-1).replace /\n/g, "\n\t"}
-  # console.log str.indexOf '\n\n'
-  fs.writeFileSync 'build/js/backbone-ui.js', "#{inc}\n#{js}"
+
 mincerCallback = (cB)->
   manifest = require './dist/manifest.json'
   path = manifest.assets["backbone-ui.js"]
   exec "mv ./dist/#{path} ./dist/backbone-ui.js", =>
     fs.unlink './dist/manifest.json', cB
-# Callback From 'stylus'
-stylusCallback=()->
-  return console.log arguments if arguments[0]?
-  noui = fs.readFileSync 'bower_components/nouislider/distribute/jquery.nouislider.min.css', 'utf8'
-  pips = fs.readFileSync 'bower_components/nouislider/distribute/jquery.nouislider.pips.min.css', 'utf8'
-  css = fs.readFileSync 'build/css/backbone-ui.css', 'utf8'
-  fs.writeFileSync 'dist/backbone-ui.css', "#{noui}\n#{pips}\n#{css}"
+
 # Callback From 'docco'
 doccoCallback=()->
   # exec "rm -rf ../sparse-pages/docs; mv docs ../sparse-pages"
@@ -69,15 +49,9 @@ doccoCallback=()->
 # ## *build*
 # Compiles Sources
 task 'build', 'Compiles Sources', ()-> build -> log ':)', green
-build = ()->
-  exec "coffee -o /tmp -c src/coffee/index.coffee", =>
-    console.log arguments if arguments[0]?
-    exec "coffee --join /tmp/classes.js -b --compile #{manifest.files.join(' ').replace(/('|\")/g, '')}", coffeeCallback
-  exec "stylus src/styl --out build/css ", stylusCallback
-task 'build:dist', 'Compiles Sources', ()-> build_dist -> log ':)', green     
-build_dist = (cB)=>
-  exec "mincer --include bower_components --include build/js --output dist backbone-ui.js", =>
-    mincerCallback cB
+build = (cB)->
+  exec "coffee -b -c -o lib src", cB
+
 # ## *watch*
 # watch project src folders and build on change
 task 'watch', 'watch project src folders and build on change', ()-> watch -> log ':)', green
