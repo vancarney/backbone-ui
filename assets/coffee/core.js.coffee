@@ -1,4 +1,4 @@
 ###
-= require index
-= require_tree core
+= require ./index
+= require_tree ./core
 ###
