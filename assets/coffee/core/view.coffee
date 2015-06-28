@@ -1,11 +1,10 @@
-class Backbone.CompositeView extends Backbone.BootstrapView
-  ns:Backbone
+class ApiHeroUI.core.View extends Backbone.View
+  ns:ApiHeroUI.core
   collection: null
   __children: []
   __parent:   null
   subviews:{}
   render:->
-    @template?()
     @createChildren()
   ## createChildren
   # > traverses subviews hash, defining any view classes upon DOM elements
@@ -83,12 +82,6 @@ class Backbone.CompositeView extends Backbone.BootstrapView
   childrenComplete:->
     @
   initialize:(o)->
-    @className ?= Fun.getConstructorName @
-    if (clazz = @ns[@className])?
-      if typeof clazz is 'object' and clazz.__template__?
-        @template = _.template _t if typeof (_t = clazz.__template__) is 'string'
-        @template = _t if typeof (_t = clazz.__template__) is 'function'
-      @template = _t if (_t = Handlebars.templates[@className.toLowerCase()])? and typeof _t is 'function'
     @model?.on "change reset", @render, @
     @collection?.on "change reset add remove", @render, @
     @__parent = o.__parent if o? and o.__parent

@@ -1,5 +1,5 @@
-class Backbone.controls.Slider extends Backbone.CompositeView
-  ns:Backbone.controls
+class ApiHeroUI.controls.Slider extends ApiHeroUI.core.View
+  ns:ApiHeroUI.controls
   modelClass: Backbone.Model.extend
     defaults:
       start:50
@@ -29,7 +29,7 @@ class Backbone.controls.Slider extends Backbone.CompositeView
     @template = _.template _t if typeof (_t = @ns[Fun.getConstructorName @]?.__template__ || Backbone.controls.Slider.__template__) is 'string'
     @model.on 'change', @render, @
     Slider.__super__.initialize.call @, o
-Backbone.controls.Slider.__template__ = """
+ApiHeroUI.controls.Slider.__template__ = """
 <div class="bbui-slider <%=classes || ''%>">
   <span class="label"><%=label%></span>
   <div class="bbui-slider-element"></div>

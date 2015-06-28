@@ -1,5 +1,5 @@
-class Backbone.controls.Checkbox extends Backbone.View
-  ns:Backbone.controls
+class ApiHeroUI.controls.Checkbox extends Backbone.View
+  ns:ApiHeroUI.controls
   __props:null
   propsClass: Backbone.Model.extend
     defaults:
@@ -27,5 +27,12 @@ class Backbone.controls.Checkbox extends Backbone.View
     @
   initialize:(opts={})->
     @__props ?= new @propsClass  opts.params || null
+    @template = _.template _t if (clazz = @ns[Fun.getConstructorName @] || Backbone.controls.Checkbox)? and typeof (_t = clazz.__template__) is 'string'
     @render()
-Backbone.controls.Checkbox.__template__ = Handlebars.templates['checkbox-control']
+ApiHeroUI.controls.Checkbox.__template__ = """
+<span class="checkbox-container">
+  <label for="{{id || ''}}">{{label}}</label>
+  <input type="checkbox" name="{{name}}" id="{{id || ''}}" value="off"/>
+  <div class="checkbox-symbol {{classes || ''}}"></div>
+</span>
+"""

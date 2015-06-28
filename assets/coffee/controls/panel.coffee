@@ -1,5 +1,5 @@
-class Backbone.controls.Panel extends Backbone.CompositeView
-  ns:Backbone.controls
+class ApiHeroUI.controls.Panel extends ApiHeroUI.core.View
+  ns:ApiHeroUI.controls
   modelClass: Backbone.Model.extend
     defaults:
       title:'Panel'
@@ -49,7 +49,7 @@ class Backbone.controls.Panel extends Backbone.CompositeView
     @__content =  @$el.children().html()
     @$el.children().remove()
     Panel.__super__.initialize.call @, o
-Backbone.controls.Panel.__template__ = """
+ApiHeroUI.controls.Panel.__template__ = """
 <div class="bbui-panel-container<%= minified ? ' minified' : ''%>">
   <div class="panel-header">
     <div class="panel-title-container">
