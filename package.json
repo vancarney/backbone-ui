@@ -8,7 +8,7 @@
     "url": ""
   },
   "version": "0.0.1-alpha",
-  "files":"assets",
+  "files":["assets/coffee","assets/less","assets/jade"],
   "dependencies": {
     "lodash": "^3.9.3",
     "uglify-js": "^2.4.15",
