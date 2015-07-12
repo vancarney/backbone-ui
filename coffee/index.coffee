@@ -4,7 +4,7 @@ global = exports ? window
 # Includes Backbone & Underscore if the environment is NodeJS
 _         = (unless typeof exports is 'undefined' then require 'underscore' else global)._
 Backbone  = unless typeof exports is 'undefined' then require 'backbone' else global.Backbone
-ApiHeroUI =
+global.ApiHeroUI =
   core: {}
   components:{}
   controls: {}

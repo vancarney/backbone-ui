@@ -1,4 +1,4 @@
-var ApiHeroUI, Backbone, _, global;
+var Backbone, _, global;
 
 global = typeof exports !== "undefined" && exports !== null ? exports : window;
 
@@ -6,7 +6,7 @@ _ = (typeof exports !== 'undefined' ? require('underscore') : global)._;
 
 Backbone = typeof exports !== 'undefined' ? require('backbone') : global.Backbone;
 
-ApiHeroUI = {
+global.ApiHeroUI = {
   core: {},
   components: {},
   controls: {},
