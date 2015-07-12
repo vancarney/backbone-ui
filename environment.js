@@ -38,10 +38,10 @@ var environment = module.exports = new Mincer.Environment('./');
 //
 
 
-environment.appendPath('assets/coffee');
-environment.appendPath('assets/less');
-environment.appendPath('assets/jade');
-environment.appendPath('vendor');
+environment.appendPath('coffee');
+environment.appendPath('less');
+environment.appendPath('jade');
+//environment.appendPath('vendor');
 
 
 //

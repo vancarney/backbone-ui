@@ -1,13 +1,12 @@
 # require Node::FS
 fs = require 'fs'
+path = require 'path'
+{_} = require 'lodash'
 # require Node::Util
 # connect = require 'connect'
 {debug, error, log, print} = require 'util'
 # import Spawn and Exec from child_process
 {spawn, exec, execFile}=require 'child_process'
-{_} = require 'underscore'
-_.templateSettings =
-  interpolate: /'\{\{(.+?)\}\}';/g
 
 # colors
 red   = "\u001b[0;31m"
@@ -20,14 +19,6 @@ catch err
   if process.platform.match(/^win/)?
     error 'The which module is required for windows. try "npm install which"'
   which = null
-# paths object for module invocation reference
-paths={
-  "coffee": [
-    "lib",
-    "src"
-  ]
-}
-
 
 # file extensions for watching
 exts='coffee|jade'
@@ -37,20 +28,34 @@ coffeeCallback=()->
   console.log arguments if arguments[0]?
 
 mincerCallback = (cB)->
-  manifest = require './dist/manifest.json'
-  path = manifest.assets["backbone-ui.js"]
-  exec "mv ./dist/#{path} ./dist/backbone-ui.js", =>
-    fs.unlink './dist/manifest.json', cB
-
+  proj_name     = path.basename __dirname
+  manifest_path = "./dist/manifest.json"
+  manifest      = require manifest_path
+  assets        = manifest.assets
+  done = _.after _.keys(assets).length, => 
+    fs.unlink manifest_path, cB
+  _.each assets, (file,name)=>
+    exec "mv ./dist/#{file} ./dist/#{proj_name}#{path.extname name}", done()
 # Callback From 'docco'
 doccoCallback=()->
   # exec "rm -rf ../sparse-pages/docs; mv docs ../sparse-pages"
+  
+  
 # Begin Tasks
+
+# ## *setup*
+# Installs Dependencies
+task 'setup', 'Installs Dependencies', ()-> setup -> log ':)', green
+setup = (cB)->
+  exec "npm install ; bower install", cB
+  
+  
 # ## *build*
 # Compiles Sources
 task 'build', 'Compiles Sources', ()-> build -> log ':)', green
 build = (cB)->
-  exec "coffee -b -c -o lib src", cB
+  exec "node manifest", =>
+    setTimeout (=> mincerCallback cB), 1200
 
 # ## *watch*
 # watch project src folders and build on change
