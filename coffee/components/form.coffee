@@ -1,4 +1,4 @@
-class ApiHeroUI.components.FormView extends ApiHero.core.View
+class ApiHeroUI.components.FormView extends ApiHeroUI.core.View
   events:
     "change input":(evt)->
       @model.set ((t = $ evt.target).attr 'name').replace(/^reg_+/, ''), t.val(), {validate:true}
