@@ -13,10 +13,13 @@ class ApiHeroUI.components.FormView extends ApiHeroUI.core.View
           @trigger 'submit-success'
         error:=>
           @trigger 'submit-failure', message:'unable to complete form submission'
-  init:(o)->
+  setModel:(modelClass)->
     @model = new @modelClass()
     .on "change reset", (=>
         @trigger 'changing'
         @model.validate()
       ), @
     .on 'invalid', ((model, e)=> @trigger 'invalid', message:e ), @
+  init:(o)->
+    @modelClass = o.modelClass if o.hasOwnProperty 'modelClass'
+    @setModel @modelClass if @modelClass?
