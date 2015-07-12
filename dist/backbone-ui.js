@@ -8,8 +8,10 @@ Backbone = typeof exports !== 'undefined' ? require('backbone') : global.Backbon
 
 ApiHeroUI = {
   core: {},
+  components: {},
   controls: {},
   interactions: {},
+  plugins: {},
   utils: {},
   routes: {}
 };$.fn.draggable = function(opt) {

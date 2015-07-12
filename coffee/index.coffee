@@ -6,7 +6,9 @@ _         = (unless typeof exports is 'undefined' then require 'underscore' else
 Backbone  = unless typeof exports is 'undefined' then require 'backbone' else global.Backbone
 ApiHeroUI =
   core: {}
+  components:{}
   controls: {}
   interactions: {}
+  plugins:{}
   utils: {}
   routes: {}
