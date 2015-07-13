@@ -278,10 +278,10 @@ ApiHeroUI.core.Application = (function(superClass) {
     if (this["#main"] == null) {
       throw "required element `#main` was not found, please check your layout";
     }
-    return this.on('view-loaded', (function(_this) {
+    return this.router.on('view-loaded', (function(_this) {
       return function(data) {
         var viewID, viewTitle;
-        _this["#main"].html("").append(data);
+        _this["#main"].$el.html("").append(data);
         viewID = _this["#main"].$("div[data-viewid]").attr("data-viewid" || 'UNKOWN_ID');
         viewTitle = _this["#main"].$("div[data-title]").attr("data-title" || viewID);
         if (viewId === 'UNKOWN_ID') {

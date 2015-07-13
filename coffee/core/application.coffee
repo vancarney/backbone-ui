@@ -12,8 +12,8 @@ class ApiHeroUI.core.Application extends ApiHeroUI.core.View
       false
   childrenComplete:->
     throw "required element `#main` was not found, please check your layout" unless @["#main"]?
-    @on 'view-loaded', (data)=>
-      @["#main"].html("").append data
+    @router.on 'view-loaded', (data)=>
+      @["#main"].$el.html("").append data
       viewID =  @["#main"].$("div[data-viewid]").attr "data-viewid" || 'UNKOWN_ID'
       viewTitle =  @["#main"].$("div[data-title]").attr "data-title" || viewID
       console.log "WARNING: data-viewid was not set" if viewId is 'UNKOWN_ID'
@@ -35,4 +35,3 @@ ApiHeroUI.core.Application::Router = class ApiHeroUI.core.Routes extends Backbon
   url:(route)->
     $.get "/#{route}", (data,t,r)=>
       @trigger 'view-loaded', data
-      
