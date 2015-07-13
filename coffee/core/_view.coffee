@@ -82,10 +82,10 @@ class ApiHeroUI.core.View extends Backbone.View
   childrenComplete:->
     @
   initialize:(o)->
-    if (colAttr = @$el.attr 'data-source')?
-      pkg = window
-      for nsPath in colAttr
-        pkg = pkg[nsPath]
+    # if (colAttr = @$el.attr 'data-source')?
+      # pkg = window
+      # for nsPath in colAttr
+        # pkg = pkg[nsPath]
       # console.log colAttr
       # @collection = pkg if pkg instanceof Backbone.Collection
       # @model      = pkg if pkg instanceof Backbone.Model

@@ -218,14 +218,7 @@ ApiHeroUI.core.View = (function(superClass) {
   };
 
   View.prototype.initialize = function(o) {
-    var colAttr, i, len, nsPath, pkg, ref, ref1;
-    if ((colAttr = this.$el.attr('data-source')) != null) {
-      pkg = window;
-      for (i = 0, len = colAttr.length; i < len; i++) {
-        nsPath = colAttr[i];
-        pkg = pkg[nsPath];
-      }
-    }
+    var ref, ref1;
     if ((ref = this.model) != null) {
       ref.on("change reset", this.render, this);
     }
