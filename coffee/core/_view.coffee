@@ -86,8 +86,8 @@ class ApiHeroUI.core.View extends Backbone.View
       pkg = window
       for nsPath in colAttr
         pkg = pkg[nsPath]
-      @collection = if pkg instanceof Backbone.Collection
-      @model = if pkg instanceof Backbone.Model
+      # @collection = if pkg instanceof Backbone.Collection
+      # @model = if pkg instanceof Backbone.Model
     @model?.on "change reset", @render, @
     @collection?.on "change reset add remove", @render, @
     @__parent = o.__parent if o? and o.__parent

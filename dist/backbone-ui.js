@@ -218,7 +218,14 @@ ApiHeroUI.core.View = (function(superClass) {
   };
 
   View.prototype.initialize = function(o) {
-    var ref, ref1;
+    var colAttr, i, len, nsPath, pkg, ref, ref1;
+    if ((colAttr = this.$el.attr('data-source')) != null) {
+      pkg = window;
+      for (i = 0, len = colAttr.length; i < len; i++) {
+        nsPath = colAttr[i];
+        pkg = pkg[nsPath];
+      }
+    }
     if ((ref = this.model) != null) {
       ref.on("change reset", this.render, this);
     }
@@ -241,6 +248,98 @@ ApiHeroUI.core.View = (function(superClass) {
   return View;
 
 })(Backbone.View);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+ApiHeroUI.core.Application = (function(superClass) {
+  extend(Application, superClass);
+
+  function Application() {
+    return Application.__super__.constructor.apply(this, arguments);
+  }
+
+  Application.prototype.el = "body";
+
+  Application.prototype.events = {
+    "click a[href^='/']": function(evt) {
+      var href, url;
+      href = $(evt.currentTarget).attr('href');
+      if (!(evt.altKey || evt.ctrlKey || evt.metaKey || evt.shiftKey)) {
+        evt.preventDefault();
+      }
+      url = href.replace(/^\//, '').replace('\#\!\/', '');
+      this.router.navigate(url, {
+        trigger: true
+      });
+      return false;
+    }
+  };
+
+  Application.prototype.childrenComplete = function() {
+    if (this["#main"] == null) {
+      throw "required element `#main` was not found, please check your layout";
+    }
+    return this.on('view-loaded', (function(_this) {
+      return function(data) {
+        var viewID, viewTitle;
+        _this["#main"].html("").append(data);
+        viewID = _this["#main"].$("div[data-viewid]").attr("data-viewid" || 'UNKOWN_ID');
+        viewTitle = _this["#main"].$("div[data-title]").attr("data-title" || viewID);
+        if (viewId === 'UNKOWN_ID') {
+          console.log("WARNING: data-viewid was not set");
+        }
+        document.title = viewTitle;
+        _this.trigger("view-initialized", viewID);
+        return _this.delegateEvents();
+      };
+    })(this));
+  };
+
+  Application.prototype.init = function(o) {
+    var rootRoute, routeOpts;
+    _.extend(this.subviews, ApiHeroUI.core.Application.prototype.subviews);
+    routeOpts = {
+      pushState: true
+    };
+    if (o != null ? o.hasOwnProperty.rootRooute : void 0) {
+      routeOpts.root = o.rootRoute;
+    }
+    if ((rootRoute = this.$el.attr('data-root-route')) != null) {
+      routeOpts.root = rootRoute;
+    }
+    this.router = new this.Router;
+    return Backbone.history.start(routeOpts);
+  };
+
+  return Application;
+
+})(ApiHeroUI.core.View);
+
+ApiHeroUI.core.Application.prototype.subviews = {
+  "#main": ApiHeroUI.core.View
+};
+
+ApiHeroUI.core.Application.prototype.Router = ApiHeroUI.core.Routes = (function(superClass) {
+  extend(Routes, superClass);
+
+  function Routes() {
+    return Routes.__super__.constructor.apply(this, arguments);
+  }
+
+  Routes.prototype.routes = {
+    "*actions": "url"
+  };
+
+  Routes.prototype.url = function(route) {
+    return $.get("/" + route, (function(_this) {
+      return function(data, t, r) {
+        return _this.trigger('view-loaded', data);
+      };
+    })(this));
+  };
+
+  return Routes;
+
+})(Backbone.Router);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 ApiHeroUI.controls.Checkbox = (function(superClass) {
