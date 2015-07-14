@@ -1,3 +1,4 @@
+'use strict';
 var Backbone, _, global;
 
 global = typeof exports !== "undefined" && exports !== null ? exports : window;
@@ -122,6 +123,21 @@ ApiHeroUI.core.View = (function(superClass) {
     return this;
   };
 
+  View.prototype.__formatter = null;
+
+  View.prototype.setTextFormatter = function(fmt) {
+    return this.__formatter = fmt;
+  };
+
+  View.prototype.getText = function() {
+    return this.$el.text();
+  };
+
+  View.prototype.setText = function(v) {
+    this.$el.text((typeof this.__formatter === "function" ? this.__formatter(v) : void 0) || v);
+    return this;
+  };
+
   View.prototype.setCollection = function(c) {
     if (this.collection) {
       this.collection.off("change reset add remove");
@@ -219,21 +235,23 @@ ApiHeroUI.core.View = (function(superClass) {
 
   View.prototype.initialize = function(o) {
     var ref, ref1;
+    if (o == null) {
+      o = {};
+    }
+    if (o.hasOwnProperty('textFormatter')) {
+      this.setTextFormatter(o.textFormatter);
+    }
     if ((ref = this.model) != null) {
       ref.on("change reset", this.render, this);
     }
     if ((ref1 = this.collection) != null) {
       ref1.on("change reset add remove", this.render, this);
     }
-    if ((o != null) && o.__parent) {
+    if (o.hasOwnProperty('__parent')) {
       this.__parent = o.__parent;
     }
-    if (typeof this.init === 'function') {
-      if (o != null) {
-        this.init(o);
-      } else {
-        this.init();
-      }
+    if ((this.init != null) && typeof this.init === 'function') {
+      this.init(o);
     }
     return this.render();
   };
@@ -404,6 +422,95 @@ ApiHeroUI.controls.Checkbox = (function(superClass) {
 ApiHeroUI.controls.Checkbox.__template__ = "<span class=\"checkbox-container\">\n  <label for=\"{{id || ''}}\">{{label}}</label>\n  <input type=\"checkbox\" name=\"{{name}}\" id=\"{{id || ''}}\" value=\"off\"/>\n  <div class=\"checkbox-symbol {{classes || ''}}\"></div>\n</span>";var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
+ApiHero.controls.DataLabel = (function(superClass) {
+  extend(DataLabel, superClass);
+
+  function DataLabel() {
+    return DataLabel.__super__.constructor.apply(this, arguments);
+  }
+
+  DataLabel.prototype.model = null;
+
+  DataLabel.prototype.defaultTitle = "Title";
+
+  DataLabel.prototype.subviews = {
+    '.datalabel-value': ApiHero.core.View,
+    '.datalabel-title': ApiHero.core.View
+  };
+
+  DataLabel.prototype.setOptions = function(opts) {
+    if (opts.defaultTitle) {
+      this.defaultTitle = opts.defaultTitle;
+      delete opts.defaultTitle;
+    }
+    this.model.set(opts);
+    return this;
+  };
+
+  DataLabel.prototype.getTitle = function() {
+    return this.model.get('title');
+  };
+
+  DataLabel.prototype.setTitle = function(v) {
+    this.model.set({
+      title: v,
+      validate: true
+    });
+    return this;
+  };
+
+  DataLabel.prototype.getValue = function() {
+    return this.model.get('value');
+  };
+
+  DataLabel.prototype.setValue = function(v) {
+    this.model.set({
+      value: (typeof this.__formatter === "function" ? this.__formatter(v) : void 0) || v,
+      validate: true
+    });
+    return this;
+  };
+
+  DataLabel.prototype.setText = function(v) {
+    return this.setValue(v);
+  };
+
+  DataLabel.prototype.init = function(o) {
+    return (this.model = new (Backbone.Model.extend({
+      defaults: {
+        title: this.defaultTitle || "",
+        value: ""
+      },
+      validate: function(o) {
+        var param, type, value;
+        for (param in o) {
+          value = o[param];
+          if ((type = typeof value) !== 'string') {
+            return param + " required to be string type was <" + type + ">";
+          }
+        }
+      }
+    }))).on('change', (function(_this) {
+      return function() {
+        _this['.datalabel-value'].setText(_this.model.get('value'));
+        return _this['.datalabel-title'].setText(_this.model.get('title'));
+      };
+    })(this));
+  };
+
+  return DataLabel;
+
+})(ApiHero.core.View);
+
+$.fn.DataLabel = (function(_this) {
+  return function(opts) {
+    return new ApiHeroUI.controls.DataLabel({
+      el: _this
+    }, opts || {});
+  };
+})(this);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
 ApiHeroUI.controls.Panel = (function(superClass) {
   extend(Panel, superClass);
 
@@ -514,7 +621,69 @@ ApiHeroUI.controls.Panel = (function(superClass) {
 
 })(ApiHeroUI.core.View);
 
-ApiHeroUI.controls.Panel.__template__ = "<div class=\"bbui-panel-container<%= minified ? ' minified' : ''%>\">\n  <div class=\"panel-header\">\n    <div class=\"panel-title-container\">\n      <h1 class=\"panel-title\"><%=title%></h1>\n    </div> \n  </div>\n  <div class=\"panel-content\">\n  </div>\n</div>";var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+ApiHeroUI.controls.Panel.__template__ = "<div class=\"bbui-panel-container<%= minified ? ' minified' : ''%>\">\n  <div class=\"panel-header\">\n    <div class=\"panel-title-container\">\n      <h1 class=\"panel-title\"><%=title%></h1>\n    </div> \n  </div>\n  <div class=\"panel-content\">\n  </div>\n</div>";'use strict';
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+ApiHeroUI.Select = (function(superClass) {
+  extend(Select, superClass);
+
+  function Select() {
+    return Select.__super__.constructor.apply(this, arguments);
+  }
+
+  Select.prototype.events = {
+    "change": "changeHandler"
+  };
+
+  Select.prototype.changeHandler = function(evt) {
+    evt.preventDefault();
+    this.trigger('change', this.getValue());
+    return false;
+  };
+
+  Select.prototype.reset = function() {
+    _.each(this.$el.find('option'), (function(_this) {
+      return function(v, k) {
+        return $(v).attr('selected', false);
+      };
+    })(this));
+    return this;
+  };
+
+  Select.prototype.setOptions = function(opts) {
+    var opt;
+    this.reset();
+    if (opts.selected != null) {
+      if (((opt = this.$el.find("option[value=" + opts.selected + "]")) != null) && opt.length) {
+        opt.attr('selected', true);
+      }
+    }
+    return this;
+  };
+
+  Select.prototype.getValue = function() {
+    return this.$el.val();
+  };
+
+  Select.prototype.setValue = function(v) {
+    this.setOptions({
+      selected: v
+    });
+    return this;
+  };
+
+  return Select;
+
+})(ApiHeroUI.core.View);
+
+$.fn.Select = (function(_this) {
+  return function(opts) {
+    return new ApiHeroUI.controls.Select({
+      el: _this
+    }, opts || {});
+  };
+})(this);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 ApiHeroUI.controls.Slider = (function(superClass) {

@@ -36,6 +36,14 @@ class ApiHeroUI.core.View extends Backbone.View
     @$el = $(@el = el) if el
     @delegateEvents()
     @
+  __formatter: null
+  setTextFormatter:(fmt)->
+    @__formatter = fmt
+  getText:->
+    @$el.text()
+  setText:(v)->
+    @$el.text (@__formatter? v) || v
+    @
   setCollection:(c)->
     @collection.off "change reset add remove" if @collection
     (@collection = c).on "change reset add remove", @render, @
@@ -81,7 +89,8 @@ class ApiHeroUI.core.View extends Backbone.View
     @
   childrenComplete:->
     @
-  initialize:(o)->
+  initialize:(o={})->
+    @setTextFormatter o.textFormatter if o.hasOwnProperty 'textFormatter'
     # if (colAttr = @$el.attr 'data-source')?
       # pkg = window
       # for nsPath in colAttr
@@ -91,7 +100,6 @@ class ApiHeroUI.core.View extends Backbone.View
       # @model      = pkg if pkg instanceof Backbone.Model
     @model?.on "change reset", @render, @
     @collection?.on "change reset add remove", @render, @
-    @__parent = o.__parent if o? and o.__parent
-    if typeof @init == 'function'
-      if o? then @init o else @init()
+    @__parent = o.__parent if o.hasOwnProperty '__parent'
+    @init o if @init? and typeof @init is 'function'
     @render()

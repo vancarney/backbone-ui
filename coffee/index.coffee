@@ -1,3 +1,4 @@
+'use strict'
 #### global
 # > References the root environment RikkiTikki is operating in
 global = exports ? window
