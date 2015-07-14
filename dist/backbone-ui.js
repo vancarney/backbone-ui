@@ -14,6 +14,7 @@ global.ApiHeroUI = {
   interactions: {},
   plugins: {},
   utils: {},
+  search: {},
   routes: {}
 };$.fn.draggable = function(opt) {
   var $el;
@@ -49,6 +50,89 @@ global.ApiHeroUI = {
         }
       };
     })(this));
+  });
+};ApiHeroUI.utils.getFunctionName = function(fun) {
+  var n;
+  if ((n = fun.toString().match(/function+\s{1,}([a-zA-Z_0-9]*)/)) != null) {
+    return n[1];
+  } else {
+    return null;
+  }
+};
+
+ApiHeroUI.utils.getDiffs = function(obj1, obj2) {
+  if ((obj1 != null) && (obj2 != null)) {
+    return _.reject(_.pairs(obj1), (function(_this) {
+      return function(v) {
+        return obj2[v[0]] === v[1];
+      };
+    })(this));
+  } else {
+    return null;
+  }
+};
+
+ApiHeroUI.utils.getTypeOf = function(obj) {
+  return Object.prototype.toString.call(obj).slice(8, -1);
+};
+
+ApiHeroUI.utils.isOfType = function(value, kind) {
+  return (this.getTypeOf(value)) === (ApiHeroUI.utils.getFunctionName(kind)) || value instanceof kind;
+};
+
+ApiHeroUI.utils.querify = function(array) {
+  if (typeof array !== 'object') {
+    return null;
+  }
+  if (!_.isArray(array)) {
+    return ApiHeroUI.utils.objectToQuery(array);
+  }
+  return "" + ((_.map(array, function(v) {
+    return v.join('=');
+  })).join('&'));
+};
+
+ApiHeroUI.utils.objectToQuery = function(object) {
+  var i, j, keys, pairs, ref;
+  if (object == null) {
+    object = {};
+  }
+  if (typeof array !== 'object') {
+    return null;
+  }
+  pairs = [];
+  keys = Object.keys(object);
+  for (i = j = 0, ref = keys.length - 1; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+    pairs[i] = [keys[i], object[keys[i]]];
+  }
+  return (pairs.map((function(_this) {
+    return function(v, k) {
+      return v.join('=');
+    };
+  })(this))).join('&');
+};
+
+ApiHeroUI.utils.queryToObject = function(string) {
+  var o;
+  if (typeof string !== 'string') {
+    return null;
+  }
+  o = {};
+  decodeURIComponent(string).replace('?', '').split('&').forEach((function(_this) {
+    return function(v, k) {
+      var p;
+      if ((p = v.split('=')).length === 2) {
+        return o[p[0]] = p[1];
+      }
+    };
+  })(this));
+  return o;
+};
+
+ApiHeroUI.utils.mkGUID = function() {
+  return 'xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r;
+    return (r = Math.random() * 16 | 0).toString(16);
   });
 };var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -94,10 +178,20 @@ ApiHeroUI.core.View = (function(superClass) {
             clazz = view;
           }
           return _.each(_this.$el.find(selector), function(v, k) {
-            return _this.__children.push(_this[selector] = new clazz(_.extend(params, {
-              el: v,
-              __parent: _this
-            })));
+            if (_.isArray(v)) {
+              _this[selector] = _.map(v, function(vEl) {
+                return new clazz(_.extend(_.clone(params), {
+                  el: vEl,
+                  __parent: _this
+                }));
+              });
+            } else {
+              _this[selector] = new clazz(_.extend(params, {
+                el: v,
+                __parent: _this
+              }));
+            }
+            return _this.__children.push(_this[selector]);
           });
         };
       })(this)));
@@ -234,12 +328,26 @@ ApiHeroUI.core.View = (function(superClass) {
   };
 
   View.prototype.initialize = function(o) {
-    var ref, ref1;
+    var colAttr, i, len, nsPath, pkg, ref, ref1;
     if (o == null) {
       o = {};
     }
     if (o.hasOwnProperty('textFormatter')) {
       this.setTextFormatter(o.textFormatter);
+    }
+    if ((colAttr = this.$el.attr('data-source')) != null) {
+      pkg = window;
+      for (i = 0, len = colAttr.length; i < len; i++) {
+        nsPath = colAttr[i];
+        pkg = pkg[nsPath];
+      }
+      console.log(colAttr);
+      if (pkg instanceof Backbone.Collection) {
+        this.collection = pkg;
+      }
+      if (pkg instanceof Backbone.Model) {
+        this.model = pkg;
+      }
     }
     if ((ref = this.model) != null) {
       ref.on("change reset", this.render, this);
@@ -505,6 +613,80 @@ ApiHero.controls.DataLabel = (function(superClass) {
 $.fn.DataLabel = (function(_this) {
   return function(opts) {
     return new ApiHeroUI.controls.DataLabel({
+      el: _this
+    }, opts || {});
+  };
+})(this);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+ApiHeroUI.controls.ListItem = (function(superClass) {
+  extend(ListItem, superClass);
+
+  function ListItem() {
+    return ListItem.__super__.constructor.apply(this, arguments);
+  }
+
+  ListItem.prototype.render = function() {
+    if (!this.template) {
+      if (this.model.attributes.hasOwnProperty('text')) {
+        return this.setText(this.model.attributes.text);
+      }
+    } else {
+      return ListItem.__super__.render.apply(this, arguments);
+    }
+  };
+
+  ListItem.prototype.init = function(o) {
+    if (this.model == null) {
+      this.model = new (Backbone.Model.extend({
+        defaults: {
+          text: ""
+        }
+      }));
+    }
+    return this.model.on('change', this.render, this);
+  };
+
+  return ListItem;
+
+})(Backbone.View);
+
+$.fn.ListItem = (function(_this) {
+  return function(opts) {
+    return new ApiHeroUI.controls.ListItem({
+      el: _this
+    }, opts || {});
+  };
+})(this);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+ApiHeroUI.controls.List = (function(superClass) {
+  extend(List, superClass);
+
+  function List() {
+    return List.__super__.constructor.apply(this, arguments);
+  }
+
+  List.prototype.el = "ul";
+
+  List.prototype.subviews = {
+    "li": ApiHeroUI.controls.ListItem
+  };
+
+  List.prototype.init = function(o) {
+    if (this.collection == null) {
+      this.collection = new Backbone.Collection;
+    }
+    return this.collection.on('change', this.render, this);
+  };
+
+  return List;
+
+})(Backbone.View);
+
+$.fn.List = (function(_this) {
+  return function(opts) {
+    return new ApiHeroUI.controls.List({
       el: _this
     }, opts || {});
   };

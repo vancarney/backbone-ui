@@ -12,4 +12,5 @@ global.ApiHeroUI =
   interactions: {}
   plugins:{}
   utils: {}
+  search:{}
   routes: {}

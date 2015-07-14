@@ -24,7 +24,11 @@ class ApiHeroUI.core.View extends Backbone.View
         else
           clazz = view
         _.each (@$el.find selector), (v,k)=>
-          @__children.push @[selector] = new clazz _.extend params, {el: v, __parent:@}
+          if _.isArray v
+            @[selector] = _.map v, (vEl)=> new clazz _.extend _.clone(params), {el: vEl, __parent:@}
+          else
+            @[selector] = new clazz _.extend params, {el: v, __parent:@}
+          @__children.push @[selector]
       )
       @delegateEvents()
     @childrenComplete()
@@ -91,13 +95,13 @@ class ApiHeroUI.core.View extends Backbone.View
     @
   initialize:(o={})->
     @setTextFormatter o.textFormatter if o.hasOwnProperty 'textFormatter'
-    # if (colAttr = @$el.attr 'data-source')?
-      # pkg = window
-      # for nsPath in colAttr
-        # pkg = pkg[nsPath]
-      # console.log colAttr
-      # @collection = pkg if pkg instanceof Backbone.Collection
-      # @model      = pkg if pkg instanceof Backbone.Model
+    if (colAttr = @$el.attr 'data-source')?
+      pkg = window
+      for nsPath in colAttr
+        pkg = pkg[nsPath]
+      console.log colAttr
+      @collection = pkg if pkg instanceof Backbone.Collection
+      @model      = pkg if pkg instanceof Backbone.Model
     @model?.on "change reset", @render, @
     @collection?.on "change reset add remove", @render, @
     @__parent = o.__parent if o.hasOwnProperty '__parent'
