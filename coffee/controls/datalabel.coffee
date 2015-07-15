@@ -1,9 +1,9 @@
-class ApiHero.controls.DataLabel extends ApiHero.core.View
+class ApiHeroUI.controls.DataLabel extends ApiHeroUI.core.View
   model:null
   defaultTitle:"Title"
   subviews:
-    '.datalabel-value':ApiHero.core.View
-    '.datalabel-title':ApiHero.core.View
+    '.datalabel-value':ApiHeroUI.core.View
+    '.datalabel-title':ApiHeroUI.core.View
   setOptions:(opts)->
     if opts.defaultTitle
       @defaultTitle = opts.defaultTitle

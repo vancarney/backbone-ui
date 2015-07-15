@@ -1,6 +1,6 @@
 class ApiHeroUI.search.Collection extends Backbone.Collection
   model:ApiHeroUI.search.ResultsModel
-  filter:new boat.SearchFilter
+  filter: null
   getLastResults:->
     @at @models.length - 1 
   getCurrentResults:->
@@ -12,9 +12,10 @@ class ApiHeroUI.search.Collection extends Backbone.Collection
   seed:(seed_elements)->
     # init the models array wtih pre-seeded search rsults on load
     @models[0] = new @model seed_elements
-    @models[0].uuid =  (h=global.app.ViewHistory).getUUIDAt h.currentIndex
+    @models[0].uuid = (h=global.app.ViewHistory).getUUIDAt h.currentIndex
   initialize:(o)->
     Collection.__super__.initialize.apply @, arguments
+    @filter = new ApiHeroUI.search.Filter
     global.app.ViewHistory.on 'navigate', (o)=>
       @add new @model() if o.get 'unique'
     @on 'add', (args...) => 

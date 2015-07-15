@@ -23,7 +23,8 @@ class ApiHeroUI.search.History extends Backbone.Collection
     History.__super__.add.call @, (if !_.isArray models then models=[models] else models), opts
   getSearchIndex:(search)->
     (@pluck 'search').lastIndexOf search.replace '?', ''
-  initialize:(o)->
+  initialize:(o={})->
+    @route = o.route if o.hasOwnProperty 'route'
     @on 'add', (models, object, options)=>
       @currentIndex = @models.length - 1
       _.each (if !_.isArray models then models=[models] else models), (v,k)=>
