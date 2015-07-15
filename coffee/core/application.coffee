@@ -17,7 +17,7 @@ class ApiHeroUI.core.Application extends ApiHeroUI.core.View
       pkg = if viewClass? then ApiHeroUI.utils.getPackageClass viewClass else null
       pkg ?= ApiHeroUI.core.View
       viewEl = @["#main"].$el.children().first()
-      @["#main"].__children.splice 0, @["#main"].__children.length, @["#main"]["page-view"] = new pkg viewEl
+      @["#main"].__children.splice 0, @["#main"].__children.length, @["#main"]["page-view"] = new pkg {el:viewEl, __parent:@["#main"]}
       viewID    = viewEl.attr "data-viewid" || 'UNKOWN_ID'
       viewTitle = viewEl.attr "data-title" || viewID
       console.log "WARNING: data-viewid was not set" if viewID is 'UNKOWN_ID'

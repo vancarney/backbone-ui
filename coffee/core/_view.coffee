@@ -49,6 +49,7 @@ class ApiHeroUI.core.View extends Backbone.View
     @$el.text (@__formatter? v) || v
     @
   setCollection:(c)->
+    return @ unless c? and c instanceof Backbone.Collection
     @collection.off "change reset add remove" if @collection
     (@collection = c).on "change reset add remove", @render, @
     @

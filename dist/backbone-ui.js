@@ -247,6 +247,9 @@ ApiHeroUI.core.View = (function(superClass) {
   };
 
   View.prototype.setCollection = function(c) {
+    if (!((c != null) && c instanceof Backbone.Collection)) {
+      return this;
+    }
     if (this.collection) {
       this.collection.off("change reset add remove");
     }
@@ -416,7 +419,10 @@ ApiHeroUI.core.Application = (function(superClass) {
           pkg = ApiHeroUI.core.View;
         }
         viewEl = _this["#main"].$el.children().first();
-        _this["#main"].__children.splice(0, _this["#main"].__children.length, _this["#main"]["page-view"] = new pkg(viewEl));
+        _this["#main"].__children.splice(0, _this["#main"].__children.length, _this["#main"]["page-view"] = new pkg({
+          el: viewEl,
+          __parent: _this["#main"]
+        }));
         viewID = viewEl.attr("data-viewid" || 'UNKOWN_ID');
         viewTitle = viewEl.attr("data-title" || viewID);
         if (viewID === 'UNKOWN_ID') {
@@ -704,7 +710,7 @@ ApiHeroUI.controls.List = (function(superClass) {
 
   return List;
 
-})(Backbone.View);
+})(ApiHeroUI.core.View);
 
 $.fn.List = (function(_this) {
   return function(opts) {
@@ -1503,6 +1509,9 @@ ApiHeroUI.search.View = (function(superClass) {
         return _this.collection.filter.addElement(filter);
       };
     })(this));
+    if (this['ul.search-results'] == null) {
+      throw "element ul.search-results was not a child of search view";
+    }
     return this['ul.search-results'].setCollection(this.collection);
   };
 
@@ -1511,7 +1520,7 @@ ApiHeroUI.search.View = (function(superClass) {
   };
 
   View.prototype.init = function() {
-    return new ApiHeroUI.search.SearchHistory;
+    return new ApiHeroUI.search.History;
   };
 
   return View;

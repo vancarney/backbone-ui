@@ -1,4 +1,4 @@
-class ApiHeroUI.controls.List extends Backbone.View
+class ApiHeroUI.controls.List extends ApiHeroUI.core.View
   el:"ul"
   subviews:
     "li": ApiHeroUI.controls.ListItem
