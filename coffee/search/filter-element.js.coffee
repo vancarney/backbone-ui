@@ -10,7 +10,8 @@ class ApiHeroUI.search.FilterElement extends ApiHeroUI.core.View
     o[@getName()] = @getValue()
     o
   init:->
-    @$el.on 'change', (=> @trigger @$el.valueOf() ), @
+    @$el.on 'change', (=> console.log "change: #{@$el.valueOf()}" ), @
+    # @$el.on 'change', (=> @trigger @$el.valueOf() ), @
     # switch @$el.prop 'tagName'
       # when 'button'
         # @$el.on 'click', (=> @trigger @$el.attr 'data-value'), @

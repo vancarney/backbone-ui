@@ -410,7 +410,7 @@ ApiHeroUI.core.Application = (function(superClass) {
     if (this["#main"] == null) {
       throw "required element `#main` was not found, please check your layout";
     }
-    initMainView = (function(_this) {
+    (initMainView = (function(_this) {
       return function() {
         var pkg, viewClass, viewEl, viewID, viewTitle;
         viewClass = _this["#main"].$el.children().first().attr('data-controller');
@@ -431,7 +431,7 @@ ApiHeroUI.core.Application = (function(superClass) {
         document.title = viewTitle;
         return _this.trigger("view-initialized", viewID);
       };
-    })(this);
+    })(this))();
     return this.router.on('view-loaded', (function(_this) {
       return function(data) {
         _this["#main"].$el.html("").append(data);
@@ -445,7 +445,9 @@ ApiHeroUI.core.Application = (function(superClass) {
     var rootRoute, routeOpts;
     _.extend(this.subviews, ApiHeroUI.core.Application.prototype.subviews);
     routeOpts = {
-      pushState: true
+      pushState: true,
+      silent: true,
+      root: '/'
     };
     if (o != null ? o.hasOwnProperty.rootRooute : void 0) {
       routeOpts.root = o.rootRoute;
@@ -477,6 +479,9 @@ ApiHeroUI.core.Application.prototype.Router = ApiHeroUI.core.Routes = (function(
   };
 
   Routes.prototype.url = function(route) {
+    if (route == null) {
+      route = "";
+    }
     return $.get("/" + route, (function(_this) {
       return function(data, t, r) {
         return _this.trigger('view-loaded', data);
@@ -1219,7 +1224,7 @@ ApiHeroUI.search.FilterElement = (function(superClass) {
   FilterElement.prototype.init = function() {
     return this.$el.on('change', ((function(_this) {
       return function() {
-        return _this.trigger(_this.$el.valueOf());
+        return console.log("change: " + (_this.$el.valueOf()));
       };
     })(this)), this);
   };

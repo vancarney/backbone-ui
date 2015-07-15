@@ -1,0 +1,13 @@
+{
+  "name": "rikki-tikki-client",
+  "homepage": "https://github.com/vancarney/rikki-tikki-client",
+  "_release": "42c6500c04",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "42c6500c0432b4342a2eee45a2d76c0673d3c7a7"
+  },
+  "_source": "https://github.com/vancarney/rikki-tikki-client.git",
+  "_target": "*",
+  "_originalSource": "git+https://github.com/vancarney/rikki-tikki-client.git"
+}

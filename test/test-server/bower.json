@@ -1,0 +1,23 @@
+{
+  "name": "apihero-ui-project-stub",
+  "version": "0.0.1-alpha",
+  "authors": [
+    "Van Carney <carney.van@gmail.com>"
+  ],
+  "main": "public/js/app.js",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+	"jquery": "^2.1.4",
+    "lodash": "^3.9.3",
+    "backbone":"^1.1.2",
+    "jquery.cookie": "^1.4.1",
+    "handlebars":"^3.0.3",
+	"fun-utils":"git+https://github.com/vancarney/fun-utils",
+    "rikki-tikki-client": "git+https://github.com/vancarney/rikki-tikki-client.git"
+  },
+  "devDependencies": {
+
+  }
+
+}

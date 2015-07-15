@@ -12,8 +12,9 @@ class ApiHeroUI.core.Application extends ApiHeroUI.core.View
       false
   childrenComplete:->
     throw "required element `#main` was not found, please check your layout" unless @["#main"]?
-    initMainView = ()=>
+    (initMainView = ()=>
       viewClass = @["#main"].$el.children().first().attr 'data-controller'
+      # console.log "viewClass: #{viewClass}"
       pkg = if viewClass? then ApiHeroUI.utils.getPackageClass viewClass else null
       pkg ?= ApiHeroUI.core.View
       viewEl = @["#main"].$el.children().first()
@@ -23,13 +24,14 @@ class ApiHeroUI.core.Application extends ApiHeroUI.core.View
       console.log "WARNING: data-viewid was not set" if viewID is 'UNKOWN_ID'
       document.title = viewTitle
       @trigger "view-initialized", viewID
+    )()
     @router.on 'view-loaded', (data)=>
       @["#main"].$el.html("").append data
       initMainView()
       @delegateEvents()
   init:(o)->
     _.extend @subviews, ApiHeroUI.core.Application::subviews
-    routeOpts = pushState: true
+    routeOpts = pushState: true, silent: true, root: '/'
     routeOpts.root = o.rootRoute if o?.hasOwnProperty.rootRooute
     routeOpts.root = rootRoute if (rootRoute = @$el.attr 'data-root-route')?
     @router = new @Router
@@ -39,6 +41,6 @@ ApiHeroUI.core.Application::subviews =
 ApiHeroUI.core.Application::Router = class ApiHeroUI.core.Routes extends Backbone.Router
   routes:
     "*actions":"url"
-  url:(route)->
+  url:(route="")->
     $.get "/#{route}", (data,t,r)=>
       @trigger 'view-loaded', data
