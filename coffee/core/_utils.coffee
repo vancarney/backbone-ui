@@ -34,6 +34,12 @@ ApiHeroUI.utils.queryToObject = (string)->
   o={}
   decodeURIComponent(string).replace('?','').split('&').forEach (v,k)=> o[p[0]] = p[1] if (p = v.split '=').length == 2
   o
+ApiHeroUI.utils.getPackageClass = (_path)->
+  return null unless _path? and typeof _path is 'string'
+  pkg = window
+  for nsPath in _path.split '.'
+    pkg = pkg[nsPath]
+  pkg
 #### mkGUID()
 # returns hexadecimal UUID
 ApiHeroUI.utils.mkGUID = ->

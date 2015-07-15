@@ -95,11 +95,8 @@ class ApiHeroUI.core.View extends Backbone.View
     @
   initialize:(o={})->
     @setTextFormatter o.textFormatter if o.hasOwnProperty 'textFormatter'
-    if (colAttr = @$el.attr 'data-source')?
-      pkg = window
-      for nsPath in colAttr
-        pkg = pkg[nsPath]
-      console.log colAttr
+    pkg = if (dataClass = @$el.attr 'data-source')? then ApiHeroUI.utils.getPackageClass dataClass else null
+    if pkg?
       @collection = pkg if pkg instanceof Backbone.Collection
       @model      = pkg if pkg instanceof Backbone.Model
     @model?.on "change reset", @render, @

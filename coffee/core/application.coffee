@@ -12,13 +12,20 @@ class ApiHeroUI.core.Application extends ApiHeroUI.core.View
       false
   childrenComplete:->
     throw "required element `#main` was not found, please check your layout" unless @["#main"]?
-    @router.on 'view-loaded', (data)=>
-      @["#main"].$el.html("").append data
-      viewID =  @["#main"].$("div[data-viewid]").attr "data-viewid" || 'UNKOWN_ID'
-      viewTitle =  @["#main"].$("div[data-title]").attr "data-title" || viewID
-      console.log "WARNING: data-viewid was not set" if viewId is 'UNKOWN_ID'
+    initMainView = ()=>
+      viewClass = @["#main"].$el.children().first().attr 'data-controller'
+      pkg = if viewClass? then ApiHeroUI.utils.getPackageClass viewClass else null
+      pkg ?= ApiHeroUI.core.View
+      viewEl = @["#main"].$el.children().first()
+      @["#main"].__children.splice 0, @["#main"].__children.length, @["#main"]["page-view"] = new pkg viewEl
+      viewID    = viewEl.attr "data-viewid" || 'UNKOWN_ID'
+      viewTitle = viewEl.attr "data-title" || viewID
+      console.log "WARNING: data-viewid was not set" if viewID is 'UNKOWN_ID'
       document.title = viewTitle
       @trigger "view-initialized", viewID
+    @router.on 'view-loaded', (data)=>
+      @["#main"].$el.html("").append data
+      initMainView()
       @delegateEvents()
   init:(o)->
     _.extend @subviews, ApiHeroUI.core.Application::subviews

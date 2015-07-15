@@ -129,6 +129,20 @@ ApiHeroUI.utils.queryToObject = function(string) {
   return o;
 };
 
+ApiHeroUI.utils.getPackageClass = function(_path) {
+  var j, len, nsPath, pkg, ref;
+  if (!((_path != null) && typeof _path === 'string')) {
+    return null;
+  }
+  pkg = window;
+  ref = _path.split('.');
+  for (j = 0, len = ref.length; j < len; j++) {
+    nsPath = ref[j];
+    pkg = pkg[nsPath];
+  }
+  return pkg;
+};
+
 ApiHeroUI.utils.mkGUID = function() {
   return 'xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r;
@@ -328,20 +342,15 @@ ApiHeroUI.core.View = (function(superClass) {
   };
 
   View.prototype.initialize = function(o) {
-    var colAttr, i, len, nsPath, pkg, ref, ref1;
+    var dataClass, pkg, ref, ref1;
     if (o == null) {
       o = {};
     }
     if (o.hasOwnProperty('textFormatter')) {
       this.setTextFormatter(o.textFormatter);
     }
-    if ((colAttr = this.$el.attr('data-source')) != null) {
-      pkg = window;
-      for (i = 0, len = colAttr.length; i < len; i++) {
-        nsPath = colAttr[i];
-        pkg = pkg[nsPath];
-      }
-      console.log(colAttr);
+    pkg = (dataClass = this.$el.attr('data-source')) != null ? ApiHeroUI.utils.getPackageClass(dataClass) : null;
+    if (pkg != null) {
       if (pkg instanceof Backbone.Collection) {
         this.collection = pkg;
       }
@@ -394,20 +403,33 @@ ApiHeroUI.core.Application = (function(superClass) {
   };
 
   Application.prototype.childrenComplete = function() {
+    var initMainView;
     if (this["#main"] == null) {
       throw "required element `#main` was not found, please check your layout";
     }
-    return this.router.on('view-loaded', (function(_this) {
-      return function(data) {
-        var viewID, viewTitle;
-        _this["#main"].$el.html("").append(data);
-        viewID = _this["#main"].$("div[data-viewid]").attr("data-viewid" || 'UNKOWN_ID');
-        viewTitle = _this["#main"].$("div[data-title]").attr("data-title" || viewID);
-        if (viewId === 'UNKOWN_ID') {
+    initMainView = (function(_this) {
+      return function() {
+        var pkg, viewClass, viewEl, viewID, viewTitle;
+        viewClass = _this["#main"].$el.children().first().attr('data-controller');
+        pkg = viewClass != null ? ApiHeroUI.utils.getPackageClass(viewClass) : null;
+        if (pkg == null) {
+          pkg = ApiHeroUI.core.View;
+        }
+        viewEl = _this["#main"].$el.children().first();
+        _this["#main"].__children.splice(0, _this["#main"].__children.length, _this["#main"]["page-view"] = new pkg(viewEl));
+        viewID = viewEl.attr("data-viewid" || 'UNKOWN_ID');
+        viewTitle = viewEl.attr("data-title" || viewID);
+        if (viewID === 'UNKOWN_ID') {
           console.log("WARNING: data-viewid was not set");
         }
         document.title = viewTitle;
-        _this.trigger("view-initialized", viewID);
+        return _this.trigger("view-initialized", viewID);
+      };
+    })(this);
+    return this.router.on('view-loaded', (function(_this) {
+      return function(data) {
+        _this["#main"].$el.html("").append(data);
+        initMainView();
         return _this.delegateEvents();
       };
     })(this));
