@@ -1520,7 +1520,11 @@ ApiHeroUI.search.View = (function(superClass) {
   };
 
   View.prototype.init = function() {
-    return new ApiHeroUI.search.History;
+    var base;
+    if ((base = global.app).ViewHistory == null) {
+      base.ViewHistory = new ApiHeroUI.search.History;
+    }
+    return this.collection != null ? this.collection : this.collection = new ApiHeroUI.search.Collection;
   };
 
   return View;

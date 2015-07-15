@@ -10,5 +10,6 @@ class ApiHeroUI.search.View extends ApiHeroUI.core.View
     @['ul.search-results'].setCollection @collection
   submit:->
     @collection.filter.submit @collection.filter.attributes
-  init:->    
-    new ApiHeroUI.search.History
+  init:->
+    global.app.ViewHistory ?= new ApiHeroUI.search.History
+    @collection ?= new ApiHeroUI.search.Collection
