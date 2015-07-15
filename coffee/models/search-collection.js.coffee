@@ -16,7 +16,8 @@ class ApiHeroUI.search.Collection extends Backbone.Collection
   initialize:(o)->
     Collection.__super__.initialize.apply @, arguments
     @filter = new ApiHeroUI.search.Filter
-    global.app.ViewHistory.on 'navigate', (o)=>
-      @add new @model() if o.get 'unique'
-    @on 'add', (args...) => 
-      args[0].fetch params: window.location.search
+    $(window).on 'apihero-initialized', =>
+      global.app.ViewHistory.on 'navigate', (o)=>
+        @add new @model() if o.get 'unique'
+      @on 'add', (args...) => 
+        args[0].fetch params: window.location.search

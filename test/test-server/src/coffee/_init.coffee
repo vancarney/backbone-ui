@@ -11,14 +11,7 @@ window.test =
   components:{}
   controls:{}
   views:{}
-window.Util ?= {}
-window.Util.GUID = ->
-  'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace /[xy]/g, (c)->
-    (if (r = Math.random()*16|0)>=0 and c == 'x' then r else (r&0x3|0x8)).toString 16
-window.Util.isMobile = ->
-  jQuery.browser.mobile
-window.Util.isPhonegap = ->
-  (window.cordova || window.PhoneGap || window.phonegap)? || /^file:\/{3}[^\/]/i.test( window.location.href )
+
 Test.API_VERSION = 'v1'
 # 'stonefly.Test.com'
 Test.HOST        = if (location.hostname.match /^(0\.0\.0\.0)|(127\.0\.0\.1)|(localhost+)$/) is null or Util.isPhonegap() then 'stonefly.Test.com' else "#{location.hostname}"

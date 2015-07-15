@@ -7,6 +7,25 @@ _ = (typeof exports !== 'undefined' ? require('underscore') : global)._;
 
 Backbone = typeof exports !== 'undefined' ? require('backbone') : global.Backbone;
 
+if (global.Util == null) {
+  global.Util = {};
+}
+
+global.Util.GUID = function() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r;
+    return ((r = Math.random() * 16 | 0) >= 0 && c === 'x' ? r : r & 0x3 | 0x8).toString(16);
+  });
+};
+
+global.Util.isMobile = function() {
+  return jQuery.browser.mobile;
+};
+
+global.Util.isPhonegap = function() {
+  return ((window.cordova || window.PhoneGap || window.phonegap) != null) || /^file:\/{3}[^\/]/i.test(window.location.href);
+};
+
 global.ApiHeroUI = {
   core: {},
   components: {},
@@ -16,7 +35,9 @@ global.ApiHeroUI = {
   utils: {},
   search: {},
   routes: {}
-};$.fn.draggable = function(opt) {
+};
+
+_.extend(global.ApiHeroUI, Backbone.Events);$.fn.draggable = function(opt) {
   var $el;
   opt = $.extend({
     handle: null,
@@ -459,6 +480,10 @@ ApiHeroUI.core.Application = (function(superClass) {
     return Backbone.history.start(routeOpts);
   };
 
+  Application.getInstance = function() {
+    return this.__instance != null ? this.__instance : this.__instance = new this;
+  };
+
   return Application;
 
 })(ApiHeroUI.core.View);
@@ -491,7 +516,22 @@ ApiHeroUI.core.Application.prototype.Router = ApiHeroUI.core.Routes = (function(
 
   return Routes;
 
-})(Backbone.Router);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+})(Backbone.Router);
+
+(function(global, $) {
+  return $(document).bind((global.Util.isPhonegap() ? 'deviceready' : 'ready'), (function(_this) {
+    return function() {
+      if (window.DEBUG) {
+        ApiHeroUI.on('apihero-init-started apihero-init-complete', function(type) {
+          return console.log("ApiHeroUI init " + type + ": " + (Date.now()));
+        });
+      }
+      ApiHeroUI.trigger('apihero-init-started', 'start');
+      global.app = ApiHeroUI.core.Application.getInstance();
+      return ApiHeroUI.trigger('apihero-init-complete', 'complete');
+    };
+  })(this));
+})(window, jQuery);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 ApiHeroUI.controls.Checkbox = (function(superClass) {
@@ -1172,19 +1212,19 @@ ApiHeroUI.search.Collection = (function(superClass) {
   Collection.prototype.initialize = function(o) {
     Collection.__super__.initialize.apply(this, arguments);
     this.filter = new ApiHeroUI.search.Filter;
-    global.app.ViewHistory.on('navigate', (function(_this) {
-      return function(o) {
-        if (o.get('unique')) {
-          return _this.add(new _this.model());
-        }
-      };
-    })(this));
-    return this.on('add', (function(_this) {
+    return $(window).on('apihero-initialized', (function(_this) {
       return function() {
-        var args;
-        args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-        return args[0].fetch({
-          params: window.location.search
+        global.app.ViewHistory.on('navigate', function(o) {
+          if (o.get('unique')) {
+            return _this.add(new _this.model());
+          }
+        });
+        return _this.on('add', function() {
+          var args;
+          args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+          return args[0].fetch({
+            params: window.location.search
+          });
         });
       };
     })(this));
@@ -1520,16 +1560,52 @@ ApiHeroUI.search.View = (function(superClass) {
     return this['ul.search-results'].setCollection(this.collection);
   };
 
-  View.prototype.submit = function() {
-    return this.collection.filter.submit(this.collection.filter.attributes);
+  View.prototype.submit = function(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    this.collection.filter.submit(this.collection.filter.attributes);
+    return false;
   };
 
   View.prototype.init = function() {
-    var base;
-    if ((base = global.app).ViewHistory == null) {
-      base.ViewHistory = new ApiHeroUI.search.History;
+    var $submitter, submitter;
+    ApiHeroUI.on('apihero-initialized', (function(_this) {
+      return function() {
+        var base;
+        console.log("init");
+        return (base = global.app).ViewHistory != null ? base.ViewHistory : base.ViewHistory = new ApiHeroUI.search.History;
+      };
+    })(this));
+    if (this.collection == null) {
+      this.collection = new ApiHeroUI.search.Collection;
     }
-    return this.collection != null ? this.collection : this.collection = new ApiHeroUI.search.Collection;
+    if ((submitter = this.$el.attr('data-search-submitter')) != null) {
+      switch (($submitter = $(submitter)).prop('tagName')) {
+        case 'button':
+          return $submitter.on('click', this.submit, this);
+        case 'a':
+          return $submitter.on('click', this.submit, this);
+        case 'input':
+          if ($submitter.attr('type' === 'select')) {
+            $submitter.keyup((function(_this) {
+              return function(evt) {
+                if (evt.keycode === 13) {
+                  return _this.submit();
+                }
+              };
+            })(this));
+          }
+          if ($submitter.attr('type' === 'checkbox')) {
+            $submitter.on('change', this.submit, this);
+          }
+          if ($submitter.attr('type' === 'radio')) {
+            $submitter.on('change', this.submit, this);
+          }
+          if ($submitter.attr('type' === 'select')) {
+            return $submitter.on('change', this.submit, this);
+          }
+      }
+    }
   };
 
   return View;

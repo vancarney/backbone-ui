@@ -1,5 +1,8 @@
 class ApiHeroUI.core.Application extends ApiHeroUI.core.View
   el:"body"
+  # constructor:->
+    # console.log 'create'
+    # Application.__super__.constructor.apply @, arguments
   events:
     "click a[href^='/']": (evt)->
       href = $(evt.currentTarget).attr 'href'
@@ -36,6 +39,8 @@ class ApiHeroUI.core.Application extends ApiHeroUI.core.View
     routeOpts.root = rootRoute if (rootRoute = @$el.attr 'data-root-route')?
     @router = new @Router
     Backbone.history.start routeOpts
+  @getInstance: ->
+    @__instance ?= new @
 ApiHeroUI.core.Application::subviews =
   "#main":ApiHeroUI.core.View
 ApiHeroUI.core.Application::Router = class ApiHeroUI.core.Routes extends Backbone.Router
@@ -44,3 +49,13 @@ ApiHeroUI.core.Application::Router = class ApiHeroUI.core.Routes extends Backbon
   url:(route="")->
     $.get "/#{route}", (data,t,r)=>
       @trigger 'view-loaded', data
+# intializes App into global scope
+(( global, $ ) ->
+  $(document).bind (if global.Util.isPhonegap() then 'deviceready' else 'ready'), =>
+    if window.DEBUG
+      ApiHeroUI.on 'apihero-init-started apihero-init-complete', (type)->
+        console.log "ApiHeroUI init #{type}: #{Date.now()}"
+    ApiHeroUI.trigger 'apihero-init-started', 'start'
+    global.app = ApiHeroUI.core.Application.getInstance()
+    ApiHeroUI.trigger 'apihero-init-complete', 'complete'
+) window, jQuery

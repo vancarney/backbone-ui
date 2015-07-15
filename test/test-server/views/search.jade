@@ -1,0 +1,5 @@
+extends ./_layout
+append yield
+  div("data-controller"="ApiHeroUI.search.View", "data-search-submitter"="#search_query")
+    h1 search
+    ul.search-results
