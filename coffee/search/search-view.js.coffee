@@ -11,23 +11,21 @@ class ApiHeroUI.search.View extends ApiHeroUI.core.View
   submit:(evt)->
     evt.preventDefault()
     evt.stopPropagation()
-    @collection.filter.submit @collection.filter.attributes
+    console.log @collection.filter.attributes
+    # @collection.filter.submit @collection.filter.attributes
     false
   init:->
-    ApiHeroUI.on 'apihero-initialized', =>
-      console.log "init"
-      global.app.ViewHistory ?= new ApiHeroUI.search.History
+    ApiHeroUI.ViewHistory ?= new ApiHeroUI.search.History
     @collection ?= new ApiHeroUI.search.Collection
     if (submitter = @$el.attr 'data-search-submitter')?
-      switch ($submitter = $ submitter).prop 'tagName'
-        when 'button'
-          $submitter.on 'click', @submit, @
-        when 'a'
-          $submitter.on 'click', @submit, @
-        when 'input'
-          if $submitter.attr 'type' is 'select'
-            $submitter.keyup (evt)=> @submit() if evt.keycode is 13
-          $submitter.on 'change', @submit, @  if $submitter.attr 'type' is 'checkbox'
-          $submitter.on 'change', @submit, @  if $submitter.attr 'type' is 'radio'
-          $submitter.on 'change', @submit, @  if $submitter.attr 'type' is 'select'
+      switch ($s = $ submitter).prop 'tagName'
+        when 'BUTTON'
+          $s.on 'click', @submit, @
+        when 'A'
+          $s.on 'click', @submit, @
+        when 'INPUT'
+          if $s.attr('type') is 'text'
+            @collection.filter.addElement new ApiHeroUI.search.FilterElement el:$s
+            return $s.closest('form').submit (evt)=> @submit evt
+          $s.on 'change', ((evt)=> @submit())
             

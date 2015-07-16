@@ -1,4 +1,5 @@
 class ApiHeroUI.search.Filter extends Backbone.Model
+  defaults:{}
   options:
     autoUpdate:true
   changeHandler:->
@@ -6,10 +7,12 @@ class ApiHeroUI.search.Filter extends Backbone.Model
       _.each diffs, (v,k)=> diffs.splice k, 1 if v? and v[0] == 'page'
     @submit diffs
   submit:(query)->
-    window.app.ViewHistory.navigate "#{ApiHeroUI.utils.objectToQuery query}"
+    # console.log query
+    # console.log "#{ApiHeroUI.utils.querify query}"
+    ApiHeroUI.ViewHistory.navigate "#{ApiHeroUI.utils.querify query}" # "#{ApiHeroUI.utils.objectToQuery query}"
   addElement:(el,opts)->
     _.extend @attributes, el.valueOf()
-    fFunc = (data)=> @filter.set data
+    fFunc = (data)=> @set data
     el.on 'change', fFunc, @
     el.stopFiltering = => el.off 'change', fFunc
     @

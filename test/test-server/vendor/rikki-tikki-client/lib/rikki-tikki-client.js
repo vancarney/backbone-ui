@@ -1988,6 +1988,42 @@
           }
         };
         
+        $scope.ResultsModel = (function(superClass) {
+          extend(ResultsModel, superClass);
+        
+          function ResultsModel() {
+            return ResultsModel.__super__.constructor.apply(this, arguments);
+          }
+        
+          ResultsModel.prototype.defaults = {
+            results: {}
+          };
+        
+          ResultsModel.prototype.params = "";
+        
+          ResultsModel.prototype.uuid = "";
+        
+          ResultsModel.prototype.url = function() {
+            return "" + ($scope.getAPIUrl()) + this.params;
+          };
+        
+          ResultsModel.prototype.initialize = function(o) {
+            this.on('change', (function(_this) {
+              return function() {
+                return _this.attributes['results'] = _this.nestCollection('results', new _this.nestedCollection(_this.get('results')));
+              };
+            })(this));
+            return this.attributes['results'] = this.nestCollection('results', new this.nestedCollection(this.get('results')));
+          };
+        
+          return ResultsModel;
+        
+        })($scope.Object);
+        
+        $scope.ResultsModel.prototype.nestedCollection = Backbone.Collection.extend({
+          model: Backbone.Model
+        });
+        
         $scope.Query = (function() {
           Query.prototype.__q = {};
         

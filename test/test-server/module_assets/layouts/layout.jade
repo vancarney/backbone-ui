@@ -12,7 +12,7 @@ unless isXHR
         link(rel="stylesheet", href="./application.css")
       else
         link(rel="stylesheet", href="assets/application.css")
-    body
+    body("data-app-namespace"= AppNS)
       block topnav
       #main.container-fluid
         block yield

@@ -16,7 +16,7 @@ var render = function(res, model) {
 var searchHandler = function(req, res, next) {
   var funcName = config.queryMethod || 'find';
   var collectionName = ((name = config.collectionName) == "") ? null : name;
-  var model = {meta:[], results:[]};
+  var model = ApiHeroLocals;
   
   if (collectionName == null && _app_ref.models.hasOwnProperty(collectionName) == false )
     return render(res, model);

@@ -14,7 +14,7 @@
     "jquery.cookie": "^1.4.1",
     "handlebars":"^3.0.3",
 	"fun-utils":"git+https://github.com/vancarney/fun-utils",
-    "rikki-tikki-client": "git+https://github.com/vancarney/rikki-tikki-client.git"
+    "rikki-tikki-client": "git+https://github.com/vancarney/rikki-tikki-client"
   },
   "devDependencies": {
 

@@ -1,8 +1,5 @@
 class ApiHeroUI.core.Application extends ApiHeroUI.core.View
   el:"body"
-  # constructor:->
-    # console.log 'create'
-    # Application.__super__.constructor.apply @, arguments
   events:
     "click a[href^='/']": (evt)->
       href = $(evt.currentTarget).attr 'href'
@@ -33,10 +30,12 @@ class ApiHeroUI.core.Application extends ApiHeroUI.core.View
       initMainView()
       @delegateEvents()
   init:(o)->
+    throw "ApiHeroUI requires 'data-app-namespace' to be set on document body" unless (ApiHeroUI.ns = @$el.attr 'data-app-namespace')?
     _.extend @subviews, ApiHeroUI.core.Application::subviews
     routeOpts = pushState: true, silent: true, root: '/'
     routeOpts.root = o.rootRoute if o?.hasOwnProperty.rootRooute
     routeOpts.root = rootRoute if (rootRoute = @$el.attr 'data-root-route')?
+    
     @router = new @Router
     Backbone.history.start routeOpts
   @getInstance: ->

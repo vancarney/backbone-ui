@@ -2,6 +2,7 @@ var fs 			= require('fs')
   , mincer		= require('mincer')
   , environment	= require('../environment');
 module.exports = function(app) {
+	global.ApiHeroLocals = {meta:[], results:[], AppNS:'Test'};
 	app.use( '/assets', mincer.createServer( environment ));
 	app.use(function(req, res, next) {
 		if (typeof res.locals == 'undefined' || res.locals == null)

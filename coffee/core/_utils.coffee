@@ -21,7 +21,7 @@ ApiHeroUI.utils.querify = (array)->
 #### objectToQuery(object)
 # Transforms Object to name value paired Query String
 ApiHeroUI.utils.objectToQuery = (object={})->
-  return null unless typeof array is 'object'
+  return null unless typeof object is 'object'
   pairs = []
   keys  = Object.keys object
   for i in [0..(keys.length - 1)]
