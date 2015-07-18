@@ -1,6 +1,12 @@
 #### $scope.Collection
 # > Implementation of Parse API `Collection`
 class $scope.Collection extends Backbone.Collection
+  # attribute name of results item if response type is `Object`
+  resultsId: 'results'
+  # holds extra attributes if response type was `Object`
+  resultAttributes:null
+  # model class to be used for extra attributes
+  resultAttributesModel:Backbone.Model
   #### __count
   # > holder for the current `models` length
   __count:undefined
@@ -21,8 +27,13 @@ class $scope.Collection extends Backbone.Collection
   #### parse([options])
   # > Overrides `Backbone.Collection.parse`
   parse : (options)->
-    # returns parsed or raw data from call to `parse` on __super__
-    (data = Collection.__super__.parse.call @, options).results || data
+    if (results = (c = Collection.__super__.parse.call @, options)[ @resultsId ])?
+      delete c[@resultsId]
+      @resultAttributes ?= new (@resultAttributesModel || Backbone.Model)
+      @resultAttributes.set c unless _.keys( c ).length() is 0
+      # returns parsed or raw data from call to `parse` on __super__
+      return results
+    c
   #### schema
   # > placeholder for prototype property override
   schema : {}

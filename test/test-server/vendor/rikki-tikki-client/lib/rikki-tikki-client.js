@@ -453,11 +453,13 @@
           };
         
           Object.prototype.url = function() {
-            var base, item, p, ref, search;
+            var _preQ, _query, base, item, ref, search;
             base = $scope.getAPIUrl();
             ref = !$scope.CAPITALIZE_CLASSNAMES ? this.className.toLowerCase() : this.className;
             item = !this.isNew() ? "/" + (this.get(this.idAttribute)) : '';
-            search = (p = $scope.querify(this.__op)).length ? "?" + p : '';
+            _preQ = this.params != null ? this.params : '?';
+            _query = $scope.querify(this.__op);
+            search = _query.length ? _preQ + "&" + _query : _preQ;
             return base + "/" + ref + item + search;
           };
         
@@ -465,6 +467,9 @@
             var encode, opts;
             if (options == null) {
               options = {};
+            }
+            if (options.hasOwnProperty('params')) {
+              this.params = options.params;
             }
             opts = $scope.apiOPTS();
             encode = function(o) {
@@ -851,6 +856,12 @@
         $scope.Collection = (function(superClass) {
           extend(Collection, superClass);
         
+          Collection.prototype.resultsId = 'results';
+        
+          Collection.prototype.resultAttributes = null;
+        
+          Collection.prototype.resultAttributesModel = Backbone.Model;
+        
           Collection.prototype.__count = void 0;
         
           Collection.prototype.count = function() {
@@ -868,8 +879,18 @@
           };
         
           Collection.prototype.parse = function(options) {
-            var data;
-            return (data = Collection.__super__.parse.call(this, options)).results || data;
+            var c, results;
+            if ((results = (c = Collection.__super__.parse.call(this, options))[this.resultsId]) != null) {
+              delete c[this.resultsId];
+              if (this.resultAttributes == null) {
+                this.resultAttributes = new (this.resultAttributesModel || Backbone.Model);
+              }
+              if (_.keys(c).length() !== 0) {
+                this.resultAttributes.set(c);
+              }
+              return results;
+            }
+            return c;
           };
         
           Collection.prototype.schema = {};
@@ -1987,42 +2008,6 @@
             return value;
           }
         };
-        
-        $scope.ResultsModel = (function(superClass) {
-          extend(ResultsModel, superClass);
-        
-          function ResultsModel() {
-            return ResultsModel.__super__.constructor.apply(this, arguments);
-          }
-        
-          ResultsModel.prototype.defaults = {
-            results: {}
-          };
-        
-          ResultsModel.prototype.params = "";
-        
-          ResultsModel.prototype.uuid = "";
-        
-          ResultsModel.prototype.url = function() {
-            return "" + ($scope.getAPIUrl()) + this.params;
-          };
-        
-          ResultsModel.prototype.initialize = function(o) {
-            this.on('change', (function(_this) {
-              return function() {
-                return _this.attributes['results'] = _this.nestCollection('results', new _this.nestedCollection(_this.get('results')));
-              };
-            })(this));
-            return this.attributes['results'] = this.nestCollection('results', new this.nestedCollection(this.get('results')));
-          };
-        
-          return ResultsModel;
-        
-        })($scope.Object);
-        
-        $scope.ResultsModel.prototype.nestedCollection = Backbone.Collection.extend({
-          model: Backbone.Model
-        });
         
         $scope.Query = (function() {
           Query.prototype.__q = {};

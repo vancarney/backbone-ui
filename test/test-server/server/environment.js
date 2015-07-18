@@ -8,7 +8,7 @@ Mincer.logger.use(console);
 
 var environment = module.exports = new Mincer.Environment('./');
 
-environment.appendPath('bower_components');
+environment.appendPath('vendor');
 environment.appendPath('src/coffee');
 environment.appendPath('src/css');
 environment.appendPath('src/less');

@@ -14,7 +14,7 @@
     "loopback-datasource-juggler": "^2.19.0",
 	"api-hero":"git+https://github.com/vancarney/rikki-tikki#api-hero",
     "apihero-module-jade-router":"git+https://github.com/vancarney/apihero-module-jade-router",
-    "rikki-tikki-client": "git+https://github.com/vancarney/rikki-tikki-client.git",
+    "rikki-tikki-client": "git+https://github.com/vancarney/rikki-tikki-client",
     "serve-favicon": "^2.0.1",
 	"jade":"^1.11.0",
     "jadebars":"^0.5.1"

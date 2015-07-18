@@ -16,7 +16,6 @@
     "src/classes/schema_item.coffee",
     "src/classes/schema.coffee",
     "src/classes/schema_loader.coffee",
-    "src/classes/results-model.coffee",
     "src/classes/query.coffee"
   ]
 }
