@@ -15,12 +15,14 @@ class ApiHeroUI.search.Collection extends Backbone.Collection
     @models[0] = new @model seed_elements
     @models[0].uuid = (h=ApiHeroUI.ViewHistory).getUUIDAt h.currentIndex
   initialize:(o)->
-    @model ?= global[ApiHeroUI.ns].ResultsModel
+    @model ?= global[ApiHeroUI.ns].Object
     @model::className = @className
     Collection.__super__.initialize.apply @, arguments
     @filter = new ApiHeroUI.search.Filter
+    @on 'add', (args...) => 
+      console.log "args[0l:"
+      console.log args[0]
+      args[0].fetch params: window.location.search
     ApiHeroUI.ViewHistory.on 'navigate', (o)=>
-        # console.log o
-        @add new @model() if o.get 'unique'
-      @on 'add', (args...) => 
-        args[0].fetch params: window.location.search
+      console.log m = new @model
+      @add m if o.get 'unique'

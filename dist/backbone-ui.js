@@ -118,7 +118,7 @@ ApiHeroUI.utils.objectToQuery = function(object) {
   if (object == null) {
     object = {};
   }
-  if (typeof array !== 'object') {
+  if (typeof object !== 'object') {
     return null;
   }
   pairs = [];
@@ -464,6 +464,9 @@ ApiHeroUI.core.Application = (function(superClass) {
 
   Application.prototype.init = function(o) {
     var rootRoute, routeOpts;
+    if ((ApiHeroUI.ns = this.$el.attr('data-app-namespace')) == null) {
+      throw "ApiHeroUI requires 'data-app-namespace' to be set on document body";
+    }
     _.extend(this.subviews, ApiHeroUI.core.Application.prototype.subviews);
     routeOpts = {
       pushState: true,
@@ -1137,39 +1140,7 @@ ApiHeroUI.components.LoginFormView = (function(superClass) {
 
   return LoginFormView;
 
-})(ApiHeroUI.components.FormView);ApiHeroUI.search.ResultsModel = (function() {
-  ResultsModel.prototype.nestedCollection = Backbone.Collection.extend({
-    model: Backbone.Model
-  });
-
-  function ResultsModel($scope) {
-    $scope.Model.extend({
-      defaults: {
-        paginate: {
-          current_page: 1,
-          total_pages: 0
-        },
-        results: {}
-      },
-      params: "",
-      uuid: "",
-      url: function() {
-        return "" + ($scope.getAPIUrl()) + this.params;
-      },
-      initialize: function(o) {
-        this.on('change', (function(_this) {
-          return function() {
-            return _this.attributes['results'] = _this.nestCollection('results', new _this.nestedCollection(_this.get('results')));
-          };
-        })(this));
-        return this.attributes['results'] = this.nestCollection('results', new this.nestedCollection(this.get('results')));
-      }
-    });
-  }
-
-  return ResultsModel;
-
-})();var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+})(ApiHeroUI.components.FormView);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   slice = [].slice;
 
@@ -1180,9 +1151,11 @@ ApiHeroUI.search.Collection = (function(superClass) {
     return Collection.__super__.constructor.apply(this, arguments);
   }
 
-  Collection.prototype.model = ApiHeroUI.search.ResultsModel;
+  Collection.prototype.model = null;
 
   Collection.prototype.filter = null;
+
+  Collection.prototype.className = 'search';
 
   Collection.prototype.getLastResults = function() {
     return this.at(this.models.length - 1);
@@ -1190,7 +1163,7 @@ ApiHeroUI.search.Collection = (function(superClass) {
 
   Collection.prototype.getCurrentResults = function() {
     var idx;
-    return this.at((idx = global.app.ViewHistory.currentIndex) >= 0 ? idx : 0);
+    return this.at((idx = ApiHeroUI.ViewHistory.currentIndex) >= 0 ? idx : 0);
   };
 
   Collection.prototype.getResultsByUUID = function(uuid) {
@@ -1206,26 +1179,34 @@ ApiHeroUI.search.Collection = (function(superClass) {
   Collection.prototype.seed = function(seed_elements) {
     var h;
     this.models[0] = new this.model(seed_elements);
-    return this.models[0].uuid = (h = global.app.ViewHistory).getUUIDAt(h.currentIndex);
+    return this.models[0].uuid = (h = ApiHeroUI.ViewHistory).getUUIDAt(h.currentIndex);
   };
 
   Collection.prototype.initialize = function(o) {
+    if (this.model == null) {
+      this.model = global[ApiHeroUI.ns].Object;
+    }
+    this.model.prototype.className = this.className;
     Collection.__super__.initialize.apply(this, arguments);
     this.filter = new ApiHeroUI.search.Filter;
-    return $(window).on('apihero-initialized', (function(_this) {
+    this.on('add', (function(_this) {
       return function() {
-        global.app.ViewHistory.on('navigate', function(o) {
-          if (o.get('unique')) {
-            return _this.add(new _this.model());
-          }
+        var args;
+        args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+        console.log("args[0l:");
+        console.log(args[0]);
+        return args[0].fetch({
+          params: window.location.search
         });
-        return _this.on('add', function() {
-          var args;
-          args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-          return args[0].fetch({
-            params: window.location.search
-          });
-        });
+      };
+    })(this));
+    return ApiHeroUI.ViewHistory.on('navigate', (function(_this) {
+      return function(o) {
+        var m;
+        console.log(m = new _this.model);
+        if (o.get('unique')) {
+          return _this.add(m);
+        }
       };
     })(this));
   };
@@ -1262,11 +1243,14 @@ ApiHeroUI.search.FilterElement = (function(superClass) {
   };
 
   FilterElement.prototype.init = function() {
+    if (this.getName() == null) {
+      throw "element " + (this.$el.get()) + " missing required `name` attribute. please add one.";
+    }
     return this.$el.on('change', ((function(_this) {
       return function() {
-        return console.log("change: " + (_this.$el.valueOf()));
+        return _this.trigger('change', _this.valueOf());
       };
-    })(this)), this);
+    })(this)));
   };
 
   return FilterElement;
@@ -1281,16 +1265,20 @@ ApiHeroUI.search.Filter = (function(superClass) {
     return Filter.__super__.constructor.apply(this, arguments);
   }
 
+  Filter.prototype.defaults = {};
+
   Filter.prototype.options = {
     autoUpdate: true
   };
+
+  Filter.prototype.paginationLinkId = 'page';
 
   Filter.prototype.changeHandler = function() {
     var diffs;
     if ((diffs = ApiHeroUI.utils.getDiffs(this.attributes, this.defaults)).length > 1) {
       _.each(diffs, (function(_this) {
         return function(v, k) {
-          if ((v != null) && v[0] === 'page') {
+          if ((v != null) && v[0] === _this.paginationLinkId) {
             return diffs.splice(k, 1);
           }
         };
@@ -1300,7 +1288,7 @@ ApiHeroUI.search.Filter = (function(superClass) {
   };
 
   Filter.prototype.submit = function(query) {
-    return window.app.ViewHistory.navigate("" + (ApiHeroUI.utils.objectToQuery(query)));
+    return ApiHeroUI.ViewHistory.navigate("" + (ApiHeroUI.utils.querify(query)));
   };
 
   Filter.prototype.addElement = function(el, opts) {
@@ -1308,7 +1296,7 @@ ApiHeroUI.search.Filter = (function(superClass) {
     _.extend(this.attributes, el.valueOf());
     fFunc = (function(_this) {
       return function(data) {
-        return _this.filter.set(data);
+        return _this.set(data);
       };
     })(this);
     el.on('change', fFunc, this);
@@ -1383,26 +1371,19 @@ ApiHeroUI.search.GeoFilter = (function(superClass) {
 
   return GeoFilter;
 
-})(ApiHeroUI.search.Filter);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
-
-ApiHeroUI.search.HistoryItem = (function(superClass) {
-  extend(HistoryItem, superClass);
-
-  function HistoryItem() {
-    return HistoryItem.__super__.constructor.apply(this, arguments);
-  }
-
-  HistoryItem.prototype.defaults = {
-    search: "",
-    unique: true,
-    uuid: "",
-    o_uuid: null
-  };
-
-  return HistoryItem;
-
-})(Backbone.Model);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+})(ApiHeroUI.search.Filter);ApiHeroUI.on('apihero-init-complete', function() {
+  global[ApiHeroUI.ns].HistoryItem = global[ApiHeroUI.ns].Object.extend({
+    className: 'search',
+    ns: ApiHeroUI.ns,
+    defaults: {
+      search: "",
+      unique: true,
+      uuid: "",
+      o_uuid: null
+    }
+  });
+  return ApiHeroUI.search.History.prototype.model = global[ApiHeroUI.ns].HistoryItem;
+});var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 ApiHeroUI.search.History = (function(superClass) {
@@ -1412,7 +1393,7 @@ ApiHeroUI.search.History = (function(superClass) {
     return History.__super__.constructor.apply(this, arguments);
   }
 
-  History.prototype.model = ApiHeroUI.search.HistoryItem;
+  History.prototype.model = null;
 
   History.prototype.currentParams = window.location.search;
 
@@ -1427,7 +1408,7 @@ ApiHeroUI.search.History = (function(superClass) {
   };
 
   History.prototype.getParams = function(search) {
-    return decodeURIComponent(ApiHeroUI.utils.objectToQuery(search));
+    return decodeURIComponent(ApiHeroUI.utils.querify(_.pairs(search)));
   };
 
   History.prototype.uuidExists = function(params) {
@@ -1468,7 +1449,10 @@ ApiHeroUI.search.History = (function(superClass) {
     if (((this.models.length - 1) - this.currentIndex) > 0) {
       this.remove(this.slice(this.currentIndex, this.models.length - 1));
     }
-    return History.__super__.add.call(this, (!_.isArray(models) ? models = [models] : models), opts);
+    if (!_.isArray(models)) {
+      models = [models];
+    }
+    return History.__super__.add.call(this, models, opts || {});
   };
 
   History.prototype.getSearchIndex = function(search) {
@@ -1486,7 +1470,10 @@ ApiHeroUI.search.History = (function(superClass) {
     this.on('add', (function(_this) {
       return function(models, object, options) {
         _this.currentIndex = _this.models.length - 1;
-        return _.each((!_.isArray(models) ? models = [models] : models), function(v, k) {
+        if (!_.isArray(models)) {
+          models = [models];
+        }
+        return _.each(models, function(v, k) {
           if (v.get('unique')) {
             return _this.trigger('navigate', v);
           }
@@ -1520,10 +1507,14 @@ ApiHeroUI.search.History = (function(superClass) {
       };
     })(this));
     search_d = (m = window.location.search.match(/s_id=([a-z0-9\-]{12})/)) ? m[1] : ApiHeroUI.utils.mkGUID();
-    this.models.push(new this.model({
-      search: (this.currentParams = this.getLocation().split('&s_id').shift()),
-      uuid: search_d
-    }));
+    ApiHeroUI.on('apihero-init-complete', (function(_this) {
+      return function() {
+        return _this.models.push(new _this.model({
+          search: (_this.currentParams = _this.getLocation().split('&s_id').shift()),
+          uuid: search_d
+        }));
+      };
+    })(this));
     return this.currentIndex = 0;
   };
 
@@ -1563,47 +1554,40 @@ ApiHeroUI.search.View = (function(superClass) {
   View.prototype.submit = function(evt) {
     evt.preventDefault();
     evt.stopPropagation();
-    this.collection.filter.submit(this.collection.filter.attributes);
+    console.log(this.collection.filter.attributes);
     return false;
   };
 
   View.prototype.init = function() {
-    var $submitter, submitter;
-    ApiHeroUI.on('apihero-initialized', (function(_this) {
-      return function() {
-        var base;
-        console.log("init");
-        return (base = global.app).ViewHistory != null ? base.ViewHistory : base.ViewHistory = new ApiHeroUI.search.History;
-      };
-    })(this));
+    var $s, submitter;
+    if (ApiHeroUI.ViewHistory == null) {
+      ApiHeroUI.ViewHistory = new ApiHeroUI.search.History;
+    }
     if (this.collection == null) {
       this.collection = new ApiHeroUI.search.Collection;
     }
     if ((submitter = this.$el.attr('data-search-submitter')) != null) {
-      switch (($submitter = $(submitter)).prop('tagName')) {
-        case 'button':
-          return $submitter.on('click', this.submit, this);
-        case 'a':
-          return $submitter.on('click', this.submit, this);
-        case 'input':
-          if ($submitter.attr('type' === 'select')) {
-            $submitter.keyup((function(_this) {
+      switch (($s = $(submitter)).prop('tagName')) {
+        case 'BUTTON':
+          return $s.on('click', this.submit, this);
+        case 'A':
+          return $s.on('click', this.submit, this);
+        case 'INPUT':
+          if ($s.attr('type') === 'text') {
+            this.collection.filter.addElement(new ApiHeroUI.search.FilterElement({
+              el: $s
+            }));
+            return $s.closest('form').submit((function(_this) {
               return function(evt) {
-                if (evt.keycode === 13) {
-                  return _this.submit();
-                }
+                return _this.submit(evt);
               };
             })(this));
           }
-          if ($submitter.attr('type' === 'checkbox')) {
-            $submitter.on('change', this.submit, this);
-          }
-          if ($submitter.attr('type' === 'radio')) {
-            $submitter.on('change', this.submit, this);
-          }
-          if ($submitter.attr('type' === 'select')) {
-            return $submitter.on('change', this.submit, this);
-          }
+          return $s.on('change', ((function(_this) {
+            return function(evt) {
+              return _this.submit();
+            };
+          })(this)));
       }
     }
   };

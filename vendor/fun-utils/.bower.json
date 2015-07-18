@@ -23,5 +23,5 @@
   },
   "_source": "https://github.com/vancarney/fun-utils.git",
   "_target": "*",
-  "_originalSource": "git+https://github.com/vancarney/fun-utils"
+  "_originalSource": "git+https://github.com/vancarney/fun-utils.git"
 }

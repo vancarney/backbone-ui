@@ -1,5 +1,5 @@
 class ApiHeroUI.search.History extends Backbone.Collection
-  model:ApiHeroUI.search.HistoryItem
+  model:null
   currentParams:window.location.search
   route:"/search"
   currentIndex:-1
@@ -7,7 +7,8 @@ class ApiHeroUI.search.History extends Backbone.Collection
   getLocation:->
     window.location.search.replace '?', ''
   getParams:(search)->
-    decodeURIComponent ApiHeroUI.utils.objectToQuery search
+    # decodeURIComponent ApiHeroUI.utils.objectToQuery search
+    decodeURIComponent ApiHeroUI.utils.querify _.pairs search
   uuidExists:(params)->
     if (len = (u = @where search:params).length) then u[0].get 'uuid' else null
   getUUIDAt:(idx)->
@@ -20,14 +21,16 @@ class ApiHeroUI.search.History extends Backbone.Collection
     @add new @model search:@currentParams, uuid:searchHistoryId, unique:(original_uuid==null), o_uuid:original_uuid
   add:(models, opts)->
     @remove @slice @currentIndex, @models.length-1 if ((@models.length-1) - @currentIndex) > 0
-    History.__super__.add.call @, (if !_.isArray models then models=[models] else models), opts
+    models = [models] unless _.isArray models
+    History.__super__.add.call @, models, opts || {}
   getSearchIndex:(search)->
     (@pluck 'search').lastIndexOf search.replace '?', ''
   initialize:(o={})->
     @route = o.route if o.hasOwnProperty 'route'
     @on 'add', (models, object, options)=>
       @currentIndex = @models.length - 1
-      _.each (if !_.isArray models then models=[models] else models), (v,k)=>
+      models = [models] unless _.isArray models
+      _.each (models), (v,k)=>
         @trigger 'navigate', v if v.get 'unique'
     @on 'remove', => 
       @currentIndex = @models.length - 1
@@ -41,5 +44,6 @@ class ApiHeroUI.search.History extends Backbone.Collection
         @currentIndex = @getSearchIndex @currentParams
       @trigger 'popstate', @at @currentIndex
     search_d = if (m = window.location.search.match(/s_id=([a-z0-9\-]{12})/)) then m[1] else ApiHeroUI.utils.mkGUID()
-    @models.push new @model search:(@currentParams = @getLocation().split('&s_id').shift()), uuid:search_d
+    ApiHeroUI.on 'apihero-init-complete', =>
+      @models.push new @model search:(@currentParams = @getLocation().split('&s_id').shift()), uuid:search_d
     @currentIndex = 0

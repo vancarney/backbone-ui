@@ -1,0 +1,51 @@
+{
+  "name": "rikki-tikki-client",
+  "main": "lib/rikki-tikki-client.js",
+  "homepage": "https://github.com/vancarney/rikki-tikki-client",
+  "authors": [
+    "Van Carney <carney.van@gmail.com>"
+  ],
+  "description": "Client for Rikki-Tikki API Platform",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "rikki-tikki",
+    "rest",
+    "api",
+    "db",
+    "mongo",
+    "mongodb",
+    "json",
+    "backbone",
+    "underscore",
+    "database",
+    "data",
+    "objects",
+    "user",
+    "role",
+    "batch",
+    "model",
+    "collection",
+    "coffeescript"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ],
+  "dependencies": {
+    "backbone-xhr-events": "1.0.1"
+  },
+  "_release": "4b6c5040a8",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "4b6c5040a8a2ded898dc2d52a932056078ba4cfa"
+  },
+  "_source": "https://github.com/vancarney/rikki-tikki-client.git",
+  "_target": "*",
+  "_originalSource": "git+https://github.com/vancarney/rikki-tikki-client.git"
+}
