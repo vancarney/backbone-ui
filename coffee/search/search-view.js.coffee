@@ -9,9 +9,9 @@ class ApiHeroUI.search.View extends ApiHeroUI.core.View
     throw "element ul.search-results was not a child of search view" unless @['ul.search-results']?
     @['ul.search-results'].setCollection @collection
   submit:(evt)->
-    evt.preventDefault()
-    evt.stopPropagation()
-    console.log @collection.filter.attributes
+    # evt.preventDefault()
+    # evt.stopPropagation()
+    # console.log @collection.filter.attributes
     # @collection.filter.submit @collection.filter.attributes
     false
   init:->

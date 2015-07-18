@@ -1552,9 +1552,6 @@ ApiHeroUI.search.View = (function(superClass) {
   };
 
   View.prototype.submit = function(evt) {
-    evt.preventDefault();
-    evt.stopPropagation();
-    console.log(this.collection.filter.attributes);
     return false;
   };
 
