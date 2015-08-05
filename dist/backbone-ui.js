@@ -506,11 +506,12 @@ ApiHeroUI.core.Application.prototype.Router = ApiHeroUI.core.Routes = (function(
     "*actions": "url"
   };
 
-  Routes.prototype.url = function(route) {
+  Routes.prototype.url = function(route, query) {
     if (route == null) {
       route = "";
     }
-    return $.get("/" + route, (function(_this) {
+    query = query != null ? "?" + query : '';
+    return $.get("/" + route + query, (function(_this) {
       return function(data, t, r) {
         return _this.trigger('view-loaded', data);
       };
@@ -1060,7 +1061,7 @@ ApiHeroUI.components.FormView = (function(superClass) {
   }
 
   FormView.prototype.events = {
-    "change input": function(evt) {
+    "change input.bind-change,textarea.bind-change,select.bind-change": function(evt) {
       var t;
       return this.model.set(((t = $(evt.target)).attr('name')).replace(/^reg_+/, ''), t.val(), {
         validate: true

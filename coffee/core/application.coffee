@@ -45,8 +45,9 @@ ApiHeroUI.core.Application::subviews =
 ApiHeroUI.core.Application::Router = class ApiHeroUI.core.Routes extends Backbone.Router
   routes:
     "*actions":"url"
-  url:(route="")->
-    $.get "/#{route}", (data,t,r)=>
+  url:(route="",query)->
+    query = if query? then "?#{query}" else ''
+    $.get "/#{route}#{query}", (data,t,r)=>
       @trigger 'view-loaded', data
 # intializes App into global scope
 (( global, $ ) ->

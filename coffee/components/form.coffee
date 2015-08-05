@@ -1,6 +1,6 @@
 class ApiHeroUI.components.FormView extends ApiHeroUI.core.View
   events:
-    "change input":(evt)->
+    "change input.bind-change,textarea.bind-change,select.bind-change":(evt)->
       @model.set ((t = $ evt.target).attr 'name').replace(/^reg_+/, ''), t.val(), {validate:true}
     "click button[name=cancel]":-> 
       @model.clear()
