@@ -1,6 +1,9 @@
 class ApiHeroUI.components.FormView extends ApiHeroUI.core.View
   events:
     "change input.bind-change,textarea.bind-change,select.bind-change":(evt)->
+      unless @model?
+        identifier = @$el.attr('id') || @$el.attr('name') || @$el.attr('class')
+        return console.log "Formview for '#{identifier}' has no model" 
       @model.set ((t = $ evt.target).attr 'name').replace(/^reg_+/, ''), t.val(), {validate:true}
     "click button[name=cancel]":-> 
       @model.clear()

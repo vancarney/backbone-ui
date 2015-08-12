@@ -1062,7 +1062,11 @@ ApiHeroUI.components.FormView = (function(superClass) {
 
   FormView.prototype.events = {
     "change input.bind-change,textarea.bind-change,select.bind-change": function(evt) {
-      var t;
+      var identifier, t;
+      if (this.model == null) {
+        identifier = this.$el.attr('id') || this.$el.attr('name') || this.$el.attr('class');
+        return console.log("Formview for '" + identifier + "' has no model");
+      }
       return this.model.set(((t = $(evt.target)).attr('name')).replace(/^reg_+/, ''), t.val(), {
         validate: true
       });
