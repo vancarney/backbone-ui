@@ -1,0 +1,31 @@
+{
+  "author": "Van Carney <carney.van@gmail.com>",
+  "name": "apihero-ui",
+  "homepage": "",
+  "bugs": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "version": "0.0.1-alpha",
+  "files":["coffee","less","jade"],
+  "dependencies": {
+    "lodash": "^3.9.3",
+    "uglify-js": "^2.4.15",
+    "coffee-script": "^1.9.3",
+    "less":"^2.5.1",
+    "mincer":"^1.3.0"
+  },
+  "devDependencies": {
+	"mocha": "^2.2.5",
+    "chai": "^3.0.0",
+  	"supertest": "^1.0.1",
+  	"loopback-testing": "^1.1.0",
+  	"api-hero":"git+https://github.com/vancarney/rikki-tikki#api-hero",
+    "bower": "latest",
+    "docco": "latest"
+  },
+  "scripts":{
+    "test":""
+  }
+}

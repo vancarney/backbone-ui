@@ -1,0 +1,64 @@
+.bbui-panel-container
+  position absolute
+  margin 0 0
+  min-width 30px
+  border 1px #666 solid
+  > div
+    position relative
+    margin 0 0 0 0
+    padding 3px 6px
+  .panel-header
+    font-size 10px
+    font-weight 400
+    min-height 10px
+    background #fff
+    cursor move
+  .panel-content
+    min-height 30px
+    min-width 30px
+    background #ccc
+  .panel-collapsed .panel-content
+    display none
+
+.checkbox-on:after
+  content "\2713"
+.checkbox-container
+  position relative
+  display inline-block
+  .checkbox-symbol
+    position relative
+    display inline-block
+    color: #ccc
+    background #1B1E22
+    border 1px solid #575B60
+    top 4px
+    width 16px
+    height 16px
+  label
+    display inline-block
+  input[type='checkbox']
+    visibility hidden
+    width 0
+ 
+.tooltip-container
+  position absolute
+  top 0
+  left 0
+  padding 8px
+  background-color white
+  border #ccc 1px solid
+  border-radius 8px
+  color #666
+  font-size 12pt
+  font-weight 200
+  font-family Helvetica, Arial, sans-serif
+  .tooltip-notch
+    bottom -5px
+    position absolute
+    display block
+    width 10px
+    height 10px
+    background-color white
+    border-right #ccc 1px solid
+    border-bottom #ccc 1px solid
+    transform rotate( 45deg )

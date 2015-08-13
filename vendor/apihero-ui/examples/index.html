@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <title>Backbone UI Component Examples</title>
+    <link rel="stylesheet" href="../bower_components/nouislider/distribute/jquery.nouislider.min.css"></link>
+    <link rel="stylesheet" href="../dist/backbone-ui.css"></link>
+  </head>
+  <body>
+    <div class="my-panel">
+      <div>
+        <h4>controls:</h4>
+        <div id="checkbox"></div>
+        <div id="slider"></div>
+      </div>
+    </div>
+    <a href="#" class="close-link">remove panel children</a>
+    <script src="../bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+    <script src="../bower_components/underscore/underscore.js" type="text/javascript"></script>
+    <script src="../bower_components/backbone/backbone.js" type="text/javascript"></script>
+    <script src="../bower_components/nouislider/distribute/jquery.nouislider.all.js" type="text/javascript"></script>
+    <script src="../bower_components/fun-utils/dist/fun-utils.js" type="text/javascript"></script>
+    <script src="../dist/backbone-ui.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      var global = window;
+      (function($) {
+        
+        var __hasProp = {}.hasOwnProperty,
+          __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+        global.CtrlCheckbox = (function(_super) {
+          __extends(CtrlCheckbox, _super);
+        
+          function CtrlCheckbox() {
+            return CtrlCheckbox.__super__.constructor.apply(this, arguments);
+          }
+          
+          return CtrlCheckbox;
+        })(Backbone.controls.Checkbox);
+        
+        global.CtrlCheckbox.__template__ = "<div class='checkbox-container'> \
+          <label for='cbk_1'>Click Here:</label> \
+          <input type='checkbox' name='cbk_1' id='cbx' value='off' /> \
+          <div class='checkbox-symbol'></div> \
+        </div>";
+        
+        global.CtrlSlider = (function(_super) {
+          __extends(CtrlSlider, _super);
+        
+          function CtrlSlider() {
+            return CtrlSlider.__super__.constructor.apply(this, arguments);
+          }
+          
+          return CtrlSlider;
+        })(Backbone.controls.Slider);
+
+        window.panel = new (Backbone.controls.Panel.extend({
+          subviews:{
+           "#checkbox":global.CtrlCheckbox,
+           "#slider":global.CtrlSlider
+          },
+          childrenComplete:function() {
+            this.model.set( {label:'New Label'} );
+          }
+        }))( {el:'.my-panel', title:'demo'} );
+        $('.close-link').click(function() {
+          console.log(panel.removeAllChildren);
+          panel.removeAllChildren()
+        }).mouseover(function(evt) {
+          new Backbone.controls.Tooltip($(evt.target),{text:"Tooltips are swell"});
+        });
+      })(jQuery);
+    </script>
+  </body>
+</html>

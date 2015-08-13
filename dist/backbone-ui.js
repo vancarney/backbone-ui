@@ -1072,26 +1072,19 @@ ApiHeroUI.components.FormView = (function(superClass) {
       });
     },
     "click button[name=cancel]": function() {
+      evt.stopPropagation();
+      evt.preventDefault();
       this.model.clear();
       this.$('input').val(null);
       _.extend(this.model.attributes, _.clone(this.model.defaults));
-      return this.trigger('cancelled');
+      this.trigger('cancelled');
+      return false;
     },
-    "click button[name=submit]": function() {
-      return this.model.save(null, {
-        success: (function(_this) {
-          return function(m, r, o) {
-            return _this.trigger('submit-success');
-          };
-        })(this),
-        error: (function(_this) {
-          return function() {
-            return _this.trigger('submit-failure', {
-              message: 'unable to complete form submission'
-            });
-          };
-        })(this)
-      });
+    "click button[name=submit]": function(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+      this.model.save(null, ApiHeroUI.components.FormView.createOptions(this));
+      return false;
     }
   };
 
@@ -1120,7 +1113,29 @@ ApiHeroUI.components.FormView = (function(superClass) {
 
   return FormView;
 
-})(ApiHeroUI.core.View);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+})(ApiHeroUI.core.View);
+
+ApiHeroUI.components.FormView.createOptions = function(scope) {
+  var opts;
+  if (!((scope != null) && typeof scope === 'object')) {
+    throw "scope object required to apply callbacks upon";
+  }
+  opts = {
+    success: (function(_this) {
+      return function(m, r, o) {
+        return scope.trigger('submit-success');
+      };
+    })(this),
+    error: (function(_this) {
+      return function() {
+        return scope.trigger('submit-failure', {
+          message: 'unable to complete form submission'
+        });
+      };
+    })(this)
+  };
+  return opts;
+};var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
 ApiHeroUI.components.LoginFormView = (function(superClass) {

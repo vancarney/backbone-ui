@@ -1,0 +1,1 @@
+ApiHeroUI.core.Application::subviews["nav"] = ApiHeroUI.core.View
