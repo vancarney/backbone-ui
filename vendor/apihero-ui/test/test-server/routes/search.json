@@ -1,8 +1,0 @@
-{
-  "name": "search",
-  "file_type": "jade",
-  "query_method": "findOne",
-  "route_file": "/Users/van/Documents/workspace/backbone-ui/test/test-server/routes/search",
-  "template_file": "search",
-  "route": "/search"
-}
