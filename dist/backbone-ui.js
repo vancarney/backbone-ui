@@ -215,13 +215,13 @@ ApiHeroUI.core.View = (function(superClass) {
           return _.each(_this.$el.find(selector), function(v, k) {
             if (_.isArray(v)) {
               _this[selector] = _.map(v, function(vEl) {
-                return new clazz(_.extend(_.clone(params), {
+                return new clazz(_.extend({}, _.clone(params), {
                   el: vEl,
                   __parent: _this
                 }));
               });
             } else {
-              _this[selector] = new clazz(_.extend(params, {
+              _this[selector] = new clazz(_.extend({}, _.clone(params), {
                 el: v,
                 __parent: _this
               }));
@@ -1131,7 +1131,6 @@ ApiHeroUI.components.LoginFormView = (function(superClass) {
   }
 
   LoginFormView.prototype.init = function(o) {
-    LoginFormView.__super__.init.call(this, o);
     ({
       formEvents: {
         "click button[name=submit]": function() {
@@ -1139,8 +1138,8 @@ ApiHeroUI.components.LoginFormView = (function(superClass) {
         }
       }
     });
-    _.extend(this.events, formEvents);
-    return this.delegateEvents();
+    this.events = _.extend({}, this.events, formEvents);
+    return LoginFormView.__super__.init.call(this, o);
   };
 
   return LoginFormView;

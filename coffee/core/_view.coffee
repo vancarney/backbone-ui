@@ -25,9 +25,9 @@ class ApiHeroUI.core.View extends Backbone.View
           clazz = view
         _.each (@$el.find selector), (v,k)=>
           if _.isArray v
-            @[selector] = _.map v, (vEl)=> new clazz _.extend _.clone(params), {el: vEl, __parent:@}
+            @[selector] = _.map v, (vEl)=> new clazz _.extend {}, _.clone(params), {el: vEl, __parent:@}
           else
-            @[selector] = new clazz _.extend params, {el: v, __parent:@}
+            @[selector] = new clazz _.extend {}, _.clone(params), {el: v, __parent:@}
           @__children.push @[selector]
       )
       @delegateEvents()
