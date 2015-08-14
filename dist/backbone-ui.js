@@ -507,7 +507,7 @@ ApiHeroUI.core.Application.prototype.Router = ApiHeroUI.core.Routes = (function(
   };
 
   Routes.prototype.url = function(route, query) {
-    var ref;
+    var ref, ref1;
     if (route == null) {
       route = "";
     }
@@ -515,7 +515,7 @@ ApiHeroUI.core.Application.prototype.Router = ApiHeroUI.core.Routes = (function(
     return $.ajax({
       url: "/" + route + query,
       headers: {
-        'Authorization': (ref = ApiHeroUI.ns) != null ? ref.getToken() : void 0
+        'Authorization': (ref = window[ApiHeroUI.ns]) != null ? (ref1 = ref.Auth) != null ? ref1.getInstance().getToken() : void 0 : void 0
       }
     }).done((function(_this) {
       return function(data, t, r) {

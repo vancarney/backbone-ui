@@ -49,7 +49,7 @@ ApiHeroUI.core.Application::Router = class ApiHeroUI.core.Routes extends Backbon
     query = if query? then "?#{query}" else ''
     $.ajax 
       url:"/#{route}#{query}"
-      headers: 'Authorization' : (ApiHeroUI.ns)?.getToken()
+      headers: 'Authorization' : (window[ApiHeroUI.ns])?.Auth?.getInstance().getToken()
     .done (data,t,r)=>
       @trigger 'view-loaded', data
 # intializes App into global scope
