@@ -507,11 +507,17 @@ ApiHeroUI.core.Application.prototype.Router = ApiHeroUI.core.Routes = (function(
   };
 
   Routes.prototype.url = function(route, query) {
+    var ref;
     if (route == null) {
       route = "";
     }
     query = query != null ? "?" + query : '';
-    return $.get("/" + route + query, (function(_this) {
+    return $.ajax({
+      url: "/" + route + query,
+      headers: {
+        'Authorization': (ref = ApiHeroUI.ns) != null ? ref.getToken() : void 0
+      }
+    }).done((function(_this) {
       return function(data, t, r) {
         return _this.trigger('view-loaded', data);
       };
