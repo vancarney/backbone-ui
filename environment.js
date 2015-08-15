@@ -41,7 +41,7 @@ var environment = module.exports = new Mincer.Environment('./');
 environment.appendPath('coffee');
 environment.appendPath('less');
 environment.appendPath('jade');
-//environment.appendPath('vendor');
+environment.appendPath('vendor');
 
 
 //

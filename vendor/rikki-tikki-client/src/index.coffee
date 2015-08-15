@@ -30,6 +30,7 @@ unless global.RikkiTikki
         #### SESSION_TOKEN
         # > The User's Session Token if signed in
         SESSION_TOKEN:undefined
+        SESSION_KEY: 'AUTHORIZATION'
         #### SESSION_TOKEN
         # > The User's CSRF Authentication Token for anti-forgery
         CSRF_TOKEN:undefined

@@ -1,24 +1,45 @@
 #### RikkiTikki.Auth
 # > Authentication Provider Interface
 class $scope.Auth extends $scope.Object
-  idAttribute:'session_id'
+  # idAttribute:'session_id'
   constructor:->
     user  = new $scope.User
     login = null
     _token = null
+    @getToken = =>
+      login?.attributes?[@idAttribute] || null
     # virtualizes user authentidation test helper method
-    @isAuthenticated = =>
-      @attributes?[@idAttribute]?
+    @isAuthenticated = => 
+      (@getToken())?
     # virtualizes user login helper method
-    @login = (username, password, options)=>
-      (login ?= new $scope.Login).login username, password, @createOptions options
+    @login = (username, password, options={})=>
+      @trigger 'authenticating'
+      options = @createOptions options
+      _opts = _.extend {}, options, {
+        success:=>
+          @trigger 'authenticated', login.attributes
+          options.success?.apply @, arguments
+      }
+      (login ?= new $scope.Login).login username, password, _opts
     # virtualizes user logout helper method
-    @logout = (options)=>
-      (login ?= new $scope.Login token:token).logout arguments
+    @logout = (options={})=>
+      @trigger 'deauthenticating'
+      _opts = _.extend {}, @createOptions( options ), {
+        success:=>
+          @trigger 'deauthenticated', login.attributes
+          options.success?.apply @, arguments
+      }
+      (login ?= new $scope.Login).logout _opts
     # virtualizes user session restoration helper method
-    @restore = (token, options)=>
+    @restore = (token, options={})=>
       _token = token
-      (login ?= new $scope.Login token:_token).restore _token, @createOptions options
+      @trigger 'authenticating'
+      _opts = _.extend {}, @createOptions( options ), {
+        success:=>
+          @trigger 'authenticated', login.attributes
+          options.success?.apply @, arguments
+      }
+      (login ?= new $scope.Login).restore _token, _opts
     # virtualizes user settings getter method
     @getUser = => user.attributes
     # virtualizes user settings setter method

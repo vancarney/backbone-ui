@@ -30,7 +30,7 @@ class $scope.Collection extends Backbone.Collection
     if (results = (c = Collection.__super__.parse.call @, options)[ @resultsId ])?
       delete c[@resultsId]
       @resultAttributes ?= new (@resultAttributesModel || Backbone.Model)
-      @resultAttributes.set c unless _.keys( c ).length() is 0
+      @resultAttributes.set c unless _.keys( c ).length is 0
       # returns parsed or raw data from call to `parse` on __super__
       return results
     c

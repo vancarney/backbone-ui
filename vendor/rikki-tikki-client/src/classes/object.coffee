@@ -3,16 +3,15 @@
 class $scope.Object extends Backbone.Model
   #### idAttribute
   # > maps our Backbone.Model id attribute to the Api's _id attribute
-  idAttribute: '_id'
+  # idAttribute: '_id'
   __schema:{paths:{}, virtuals:{}}
   createOptions:(options)->
     success = options.success || null
     _.extend options, {
       success:(m,r,o)=>
-        $scope.SESSION_TOKEN  = r.session_id
+        $scope.SESSION_TOKEN  = r.id || r.session_id || r.session || r.user_token || r.token
         $scope.CSRF_TOKEN     = r.csrf_token
-        $scope.USER_EMAIL     = r.user_email
-        $scope.USER_TOKEN     = r.user_token
+        $scope.USER_EMAIL     = r.user_email || r.email
         success?.apply @, arguments
     }
   #### constructor(attrs, opts)
@@ -22,7 +21,7 @@ class $scope.Object extends Backbone.Model
     super attrs, opts
     # writes warning to console if the Object's `className` was not detected
     if (@className ?= $scope.getConstructorName @) == $scope.UNDEFINED_CLASSNAME
-      console.warn "#{namespace}.Object requires className to be defined"
+      console.warn "#{$scope.namespace}.Object requires className to be defined"
     # pluralizes the `className`
     else
       @className = $scope.Inflection.pluralize @className
@@ -55,14 +54,18 @@ class $scope.Object extends Backbone.Model
     base    = $scope.getAPIUrl()
     ref     = unless $scope.CAPITALIZE_CLASSNAMES then @className.toLowerCase() else @className
     item    = unless @isNew() then "/#{@get @idAttribute}" else ''
-    search  = if (p=$scope.querify @__op).length then "?#{p}" else ''
+    # search  = if (p=$scope.querify @__op).length then "?#{p}" else ''
+    _preQ  = if @params? then @params else '?'
+    _query = $scope.querify @__op
+    search = if _query.length then "#{_preQ}&#{_query}" else _preQ
     "#{base}/#{ref}#{item}#{search}"
   #### sync(method, model, [options])
   # > Overrides `Backbone.Model.sync` to apply custom API header and data
   sync : (method, model, options={})->
+    # sets `params` attribute if present in options object
+    @params = options.params if options.hasOwnProperty 'params'
     # obtains new API Header Object
     opts = $scope.apiOPTS()
-    
     encode = (o)->
       if _.isObject o and o.hasOwnProperty '_toPointer' and typeof o._toPointer == 'function' 
         o = o._toPointer()

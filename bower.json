@@ -10,15 +10,10 @@
   "dependencies": {
     "jquery": "^2.1.4",
     "lodash": "^3.9.3",
-    "backbone":"^1.1.2",
-    "jquery.cookie": "^1.4.1",
-    "handlebars":"^3.0.3",
-	"fun-utils":"git+https://github.com/vancarney/fun-utils",
-	"fun-utils": "git+https://github.com/vancarney/fun-utils.git",
-    "rikki-tikki-client": "git+https://github.com/vancarney/rikki-tikki-client.git"
+    "backbone": "^1.1.2",
+    "fun-utils": "git+https://github.com/vancarney/fun-utils.git",
+    "rikki-tikki-client": "git+https://github.com/vancarney/rikki-tikki-client.git",
+    "js-cookie": "~2.0.3"
   },
-  "devDependencies": {
-
-  }
-
+  "devDependencies": {}
 }

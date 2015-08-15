@@ -35,11 +35,30 @@ class ApiHeroUI.core.Application extends ApiHeroUI.core.View
     routeOpts = pushState: true, silent: true, root: '/'
     routeOpts.root = o.rootRoute if o?.hasOwnProperty.rootRooute
     routeOpts.root = rootRoute if (rootRoute = @$el.attr 'data-root-route')?
-    
+    if (@auth = (window[ApiHeroUI.ns])?.Auth?.getInstance())?
+      @auth.on 'authorized', =>
+        c = ApiHeroUI.config.AuthCookie
+        if @auth.persist
+          Cookies.set "#{ApiHeroUI.ns}-persist", true, c
+        else
+          delete c.expires 
+        Cookies.set "#{ApiHeroUI.ns}-auth", (window[ApiHeroUI.ns])?.Auth?.getInstance().getToken(), c
+      @auth.on 'deauthorized', =>
+        c = ApiHeroUI.config.AuthCookie
+        return unless (cookie = Cookies.get "#{ApiHeroUI.ns}-auth")?
+        if (Cookies.get "#{ApiHeroUI.ns}-persist")?
+          delete c.expires
+          Cookies.remove "#{ApiHeroUI.ns}-persist", c
+        Cookies.remove "#{ApiHeroUI.ns}-auth", c
+      @auth.restore token if (token = Cookies.get "#{ApiHeroUI.ns}-auth")?
     @router = new @Router
     Backbone.history.start routeOpts
   @getInstance: ->
     @__instance ?= new @
+ApiHeroUI.config =
+  AuthCookie:
+    expires: 14
+    path: '/'
 ApiHeroUI.core.Application::subviews =
   "#main":ApiHeroUI.core.View
 ApiHeroUI.core.Application::Router = class ApiHeroUI.core.Routes extends Backbone.Router

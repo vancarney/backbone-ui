@@ -27,6 +27,7 @@
           REST_KEY: void 0,
           REST_KEY_PARAM_NAME: 'REST_KEY',
           SESSION_TOKEN: void 0,
+          SESSION_KEY: 'AUTHORIZATION',
           CSRF_TOKEN: void 0,
           API_VERSION: '1',
           MAX_BATCH_SIZE: 50,
@@ -75,7 +76,7 @@
         
         $scope.apiOPTS = function() {
           var o;
-          return o = {
+          (o = {
             contentType: "application/json",
             processData: false,
             dataType: 'json',
@@ -84,12 +85,11 @@
               'Content-Type': 'application/json',
               'X-Application-Id': $scope.APP_ID,
               'X-REST-API-Key': $scope.REST_KEY,
-              'X-Session-Token': $scope.SESSION_TOKEN,
               'X-CSRF-Token': $scope.CSRF_TOKEN,
-              'X-User-Token': $scope.USER_TOKEN,
               'X-User-Email': $scope.USER_EMAIL
             }
-          };
+          }).headers[$scope.SESSION_KEY] = $scope.SESSION_TOKEN;
+          return o;
         };
         
         $scope.regEscape = function(string) {
@@ -346,8 +346,6 @@
         $scope.Object = (function(superClass) {
           extend(Object, superClass);
         
-          Object.prototype.idAttribute = '_id';
-        
           Object.prototype.__schema = {
             paths: {},
             virtuals: {}
@@ -359,10 +357,9 @@
             return _.extend(options, {
               success: (function(_this) {
                 return function(m, r, o) {
-                  $scope.SESSION_TOKEN = r.session_id;
+                  $scope.SESSION_TOKEN = r.id || r.session_id || r.session || r.user_token || r.token;
                   $scope.CSRF_TOKEN = r.csrf_token;
-                  $scope.USER_EMAIL = r.user_email;
-                  $scope.USER_TOKEN = r.user_token;
+                  $scope.USER_EMAIL = r.user_email || r.email;
                   return success != null ? success.apply(_this, arguments) : void 0;
                 };
               })(this)
@@ -378,7 +375,7 @@
             }
             Object.__super__.constructor.call(this, attrs, opts);
             if ((this.className != null ? this.className : this.className = $scope.getConstructorName(this)) === $scope.UNDEFINED_CLASSNAME) {
-              console.warn(namespace + ".Object requires className to be defined");
+              console.warn($scope.namespace + ".Object requires className to be defined");
             } else {
               this.className = $scope.Inflection.pluralize(this.className);
             }
@@ -453,11 +450,13 @@
           };
         
           Object.prototype.url = function() {
-            var base, item, p, ref, search;
+            var _preQ, _query, base, item, ref, search;
             base = $scope.getAPIUrl();
             ref = !$scope.CAPITALIZE_CLASSNAMES ? this.className.toLowerCase() : this.className;
             item = !this.isNew() ? "/" + (this.get(this.idAttribute)) : '';
-            search = (p = $scope.querify(this.__op)).length ? "?" + p : '';
+            _preQ = this.params != null ? this.params : '?';
+            _query = $scope.querify(this.__op);
+            search = _query.length ? _preQ + "&" + _query : _preQ;
             return base + "/" + ref + item + search;
           };
         
@@ -465,6 +464,9 @@
             var encode, opts;
             if (options == null) {
               options = {};
+            }
+            if (options.hasOwnProperty('params')) {
+              this.params = options.params;
             }
             opts = $scope.apiOPTS();
             encode = function(o) {
@@ -880,7 +882,7 @@
               if (this.resultAttributes == null) {
                 this.resultAttributes = new (this.resultAttributesModel || Backbone.Model);
               }
-              if (_.keys(c).length() !== 0) {
+              if (_.keys(c).length !== 0) {
                 this.resultAttributes.set(c);
               }
               return results;
@@ -1469,8 +1471,6 @@
         $scope.Login = (function(superClass) {
           extend(Login, superClass);
         
-          Login.prototype.idAttribute = 'token';
-        
           Login.prototype.defaults = {
             email: String,
             password: String
@@ -1484,41 +1484,74 @@
           Login.prototype.validate = function(o) {
             var email, password, token;
             email = o.email || this.attributes.email || null;
-            password = o.token || this.attributes.password || null;
-            token = o.token || this.attributes.token || null;
+            password = o.password || this.attributes.password || null;
+            token = o[this.idAttribute] || this.attributes[this.idAttribute] || null;
             if (email != null) {
               if (password == null) {
                 return "password required";
               }
-              if (token != null) {
-                return "password required";
-              }
             }
-            if (token != null) {
-              if (email != null) {
-                return "token based authentication does not use email address";
-              }
-              if (password != null) {
-                return "token based authentication does not use password";
+            if (password != null) {
+              if (email == null) {
+                return "email required";
               }
             }
           };
         
           Login.prototype.login = function(email, password, options) {
+            var _opts;
+            if (options == null) {
+              options = {};
+            }
+            _opts = _.extend({}, options, {
+              success: (function(_this) {
+                return function() {
+                  var ref1;
+                  if (($scope.SESSION_TOKEN = _this.attributes[_this.idAttribute]) == null) {
+                    throw "INVALID RESPONSE:\n" + (JSON.stringify(arguments[1]));
+                  }
+                  return (ref1 = options.success) != null ? ref1.apply(_this, arguments) : void 0;
+                };
+              })(this)
+            });
             return this.save({
               email: email,
               password: password
-            }, options);
+            }, _opts);
           };
         
           Login.prototype.logout = function(options) {
-            return this.destroy();
+            var _opts;
+            if (options == null) {
+              options = {};
+            }
+            _opts = _.extend({}, options, {
+              success: (function(_this) {
+                return function() {
+                  var ref1;
+                  return (ref1 = options.success) != null ? ref1.apply(_this, arguments) : void 0;
+                };
+              })(this)
+            });
+            return this.destroy(_opts);
           };
         
           Login.prototype.restore = function(token, options) {
+            var _opts;
+            if (options == null) {
+              options = {};
+            }
+            _opts = _.extend({}, options, {
+              success: (function(_this) {
+                return function() {
+                  var ref1;
+                  return (ref1 = options.success) != null ? ref1.apply(_this, arguments) : void 0;
+                };
+              })(this)
+            });
             return this.fetch({
               token: token
-            }, options);
+            }, _opts);
           };
         
           Login.prototype.isAuthenticated = function() {
@@ -1532,37 +1565,73 @@
         $scope.Auth = (function(superClass) {
           extend(Auth, superClass);
         
-          Auth.prototype.idAttribute = 'session_id';
-        
           function Auth() {
             var _token, login, user;
             user = new $scope.User;
             login = null;
             _token = null;
-            this.isAuthenticated = (function(_this) {
+            this.getToken = (function(_this) {
               return function() {
                 var ref1;
-                return ((ref1 = _this.attributes) != null ? ref1[_this.idAttribute] : void 0) != null;
+                return (login != null ? (ref1 = login.attributes) != null ? ref1[_this.idAttribute] : void 0 : void 0) || null;
+              };
+            })(this);
+            this.isAuthenticated = (function(_this) {
+              return function() {
+                return (_this.getToken()) != null;
               };
             })(this);
             this.login = (function(_this) {
               return function(username, password, options) {
-                return (login != null ? login : login = new $scope.Login).login(username, password, _this.createOptions(options));
+                var _opts;
+                if (options == null) {
+                  options = {};
+                }
+                _this.trigger('authenticating');
+                options = _this.createOptions(options);
+                _opts = _.extend({}, options, {
+                  success: function() {
+                    var ref1;
+                    _this.trigger('authenticated', login.attributes);
+                    return (ref1 = options.success) != null ? ref1.apply(_this, arguments) : void 0;
+                  }
+                });
+                return (login != null ? login : login = new $scope.Login).login(username, password, _opts);
               };
             })(this);
             this.logout = (function(_this) {
               return function(options) {
-                return (login != null ? login : login = new $scope.Login({
-                  token: token
-                })).logout(arguments);
+                var _opts;
+                if (options == null) {
+                  options = {};
+                }
+                _this.trigger('deauthenticating');
+                _opts = _.extend({}, _this.createOptions(options), {
+                  success: function() {
+                    var ref1;
+                    _this.trigger('deauthenticated', login.attributes);
+                    return (ref1 = options.success) != null ? ref1.apply(_this, arguments) : void 0;
+                  }
+                });
+                return (login != null ? login : login = new $scope.Login).logout(_opts);
               };
             })(this);
             this.restore = (function(_this) {
               return function(token, options) {
+                var _opts;
+                if (options == null) {
+                  options = {};
+                }
                 _token = token;
-                return (login != null ? login : login = new $scope.Login({
-                  token: _token
-                })).restore(_token, _this.createOptions(options));
+                _this.trigger('authenticating');
+                _opts = _.extend({}, _this.createOptions(options), {
+                  success: function() {
+                    var ref1;
+                    _this.trigger('authenticated', login.attributes);
+                    return (ref1 = options.success) != null ? ref1.apply(_this, arguments) : void 0;
+                  }
+                });
+                return (login != null ? login : login = new $scope.Login).restore(_token, _opts);
               };
             })(this);
             this.getUser = (function(_this) {

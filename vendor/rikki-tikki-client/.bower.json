@@ -39,11 +39,11 @@
   "dependencies": {
     "backbone-xhr-events": "1.0.1"
   },
-  "_release": "4b6c5040a8",
+  "_release": "8cd5dd1b12",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "4b6c5040a8a2ded898dc2d52a932056078ba4cfa"
+    "commit": "8cd5dd1b123277303156631e1cfa2d02308f0d5b"
   },
   "_source": "https://github.com/vancarney/rikki-tikki-client.git",
   "_target": "*",

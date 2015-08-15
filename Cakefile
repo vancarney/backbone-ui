@@ -30,9 +30,12 @@ coffeeCallback=()->
 mincerCallback = (cB)->
   proj_name     = path.basename __dirname
   manifest_path = "./dist/manifest.json"
-  manifest      = require manifest_path
+  try
+    manifest      = require manifest_path
+  catch e
+    return cB "build failed"
   assets        = manifest.assets
-  done = _.after _.keys(assets).length, => 
+  done = _.after _.keys(assets).length, =>
     fs.unlink manifest_path, cB
   _.each assets, (file,name)=>
     exec "mv ./dist/#{file} ./dist/#{proj_name}#{path.extname name}", done()
