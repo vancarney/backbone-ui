@@ -36,14 +36,14 @@ class ApiHeroUI.core.Application extends ApiHeroUI.core.View
     routeOpts.root = o.rootRoute if o?.hasOwnProperty.rootRooute
     routeOpts.root = rootRoute if (rootRoute = @$el.attr 'data-root-route')?
     if (@auth = (window[ApiHeroUI.ns])?.Auth?.getInstance())?
-      @auth.on 'authorized', =>
+      @auth.on 'authenticated', =>
         c = ApiHeroUI.config.AuthCookie
         if @auth.persist
           Cookies.set "#{ApiHeroUI.ns}-persist", true, c
         else
           delete c.expires 
         Cookies.set "#{ApiHeroUI.ns}-auth", (window[ApiHeroUI.ns])?.Auth?.getInstance().getToken(), c
-      @auth.on 'deauthorized', =>
+      @auth.on 'deauthenticated', =>
         c = ApiHeroUI.config.AuthCookie
         return unless (cookie = Cookies.get "#{ApiHeroUI.ns}-auth")?
         if (Cookies.get "#{ApiHeroUI.ns}-persist")?

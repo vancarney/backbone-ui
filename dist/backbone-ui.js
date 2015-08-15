@@ -618,7 +618,7 @@ ApiHeroUI.core.Application = (function(superClass) {
       routeOpts.root = rootRoute;
     }
     if ((this.auth = (ref = window[ApiHeroUI.ns]) != null ? (ref1 = ref.Auth) != null ? ref1.getInstance() : void 0 : void 0) != null) {
-      this.auth.on('authorized', (function(_this) {
+      this.auth.on('authenticated', (function(_this) {
         return function() {
           var c, ref2, ref3;
           c = ApiHeroUI.config.AuthCookie;
@@ -630,7 +630,7 @@ ApiHeroUI.core.Application = (function(superClass) {
           return Cookies.set(ApiHeroUI.ns + "-auth", (ref2 = window[ApiHeroUI.ns]) != null ? (ref3 = ref2.Auth) != null ? ref3.getInstance().getToken() : void 0 : void 0, c);
         };
       })(this));
-      this.auth.on('deauthorized', (function(_this) {
+      this.auth.on('deauthenticated', (function(_this) {
         return function() {
           var c, cookie;
           c = ApiHeroUI.config.AuthCookie;
