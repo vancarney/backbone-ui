@@ -45,6 +45,7 @@ class ApiHeroUI.core.Application extends ApiHeroUI.core.View
         Cookies.set "#{ApiHeroUI.ns}-auth", (window[ApiHeroUI.ns])?.Auth?.getInstance().getToken(), c
       @auth.on 'deauthenticated', =>
         c = ApiHeroUI.config.AuthCookie
+        @router.refresh()
         return unless (cookie = Cookies.get "#{ApiHeroUI.ns}-auth")?
         if (Cookies.get "#{ApiHeroUI.ns}-persist")?
           delete c.expires
@@ -64,6 +65,8 @@ ApiHeroUI.core.Application::subviews =
 ApiHeroUI.core.Application::Router = class ApiHeroUI.core.Routes extends Backbone.Router
   routes:
     "*actions":"url"
+  refresh:->
+    @url window.location.pathname, window.location.search.replace /^?/, ''
   url:(route="",query)->
     query = if query? then "?#{query}" else ''
     $.ajax 

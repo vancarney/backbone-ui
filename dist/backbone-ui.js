@@ -634,6 +634,7 @@ ApiHeroUI.core.Application = (function(superClass) {
         return function() {
           var c, cookie;
           c = ApiHeroUI.config.AuthCookie;
+          _this.router.refresh();
           if ((cookie = Cookies.get(ApiHeroUI.ns + "-auth")) == null) {
             return;
           }
@@ -680,6 +681,10 @@ ApiHeroUI.core.Application.prototype.Router = ApiHeroUI.core.Routes = (function(
 
   Routes.prototype.routes = {
     "*actions": "url"
+  };
+
+  Routes.prototype.refresh = function() {
+    return this.url(window.location.pathname, window.location.search.replace(/^?/, ''));
   };
 
   Routes.prototype.url = function(route, query) {
