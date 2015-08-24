@@ -145,32 +145,26 @@ _ = (typeof exports !== 'undefined' ? require('underscore') : global)._;
 
 Backbone = typeof exports !== 'undefined' ? require('backbone') : global.Backbone;
 
-if (global.Util == null) {
-  global.Util = {};
-}
-
-global.Util.GUID = function() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r;
-    return ((r = Math.random() * 16 | 0) >= 0 && c === 'x' ? r : r & 0x3 | 0x8).toString(16);
-  });
-};
-
-global.Util.isMobile = function() {
-  return jQuery.browser.mobile;
-};
-
-global.Util.isPhonegap = function() {
-  return ((window.cordova || window.PhoneGap || window.phonegap) != null) || /^file:\/{3}[^\/]/i.test(window.location.href);
-};
-
 global.ApiHeroUI = {
   core: {},
   components: {},
   controls: {},
   interactions: {},
   plugins: {},
-  utils: {},
+  utils: {
+    guid: function() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r;
+        return ((r = Math.random() * 16 | 0) >= 0 && c === 'x' ? r : r & 0x3 | 0x8).toString(16);
+      });
+    },
+    isMobile: function() {
+      return /Mobi/i.test(navigator.userAgent);
+    },
+    isPhonegap: function() {
+      return ((window.cordova || window.PhoneGap || window.phonegap) != null) || /^file:\/{3}[^\/]/i.test(window.location.href);
+    }
+  },
   search: {},
   routes: {}
 };
@@ -627,7 +621,8 @@ ApiHeroUI.core.Application = (function(superClass) {
           } else {
             delete c.expires;
           }
-          return Cookies.set(ApiHeroUI.ns + "-auth", (ref2 = window[ApiHeroUI.ns]) != null ? (ref3 = ref2.Auth) != null ? ref3.getInstance().getToken() : void 0 : void 0, c);
+          Cookies.set(ApiHeroUI.ns + "-auth", (ref2 = window[ApiHeroUI.ns]) != null ? (ref3 = ref2.Auth) != null ? ref3.getInstance().getToken() : void 0 : void 0, c);
+          return _this.router.refresh();
         };
       })(this));
       this.auth.on('deauthenticated', (function(_this) {
@@ -684,7 +679,7 @@ ApiHeroUI.core.Application.prototype.Router = ApiHeroUI.core.Routes = (function(
   };
 
   Routes.prototype.refresh = function() {
-    return this.url(window.location.pathname, window.location.search.replace(/^?/, ''));
+    return this.url(window.location.pathname.replace(/^\//, ''), window.location.search.replace(/^\?/, ''));
   };
 
   Routes.prototype.url = function(route, query) {
@@ -692,7 +687,7 @@ ApiHeroUI.core.Application.prototype.Router = ApiHeroUI.core.Routes = (function(
     if (route == null) {
       route = "";
     }
-    query = query != null ? "?" + query : '';
+    query = (query != null ? query.length : void 0) ? "?" + query : '';
     return $.ajax({
       url: "/" + route + query,
       headers: {
@@ -710,7 +705,7 @@ ApiHeroUI.core.Application.prototype.Router = ApiHeroUI.core.Routes = (function(
 })(Backbone.Router);
 
 (function(global, $) {
-  return $(document).bind((global.Util.isPhonegap() ? 'deviceready' : 'ready'), (function(_this) {
+  return $(document).bind((ApiHeroUI.utils.isPhonegap() ? 'deviceready' : 'ready'), (function(_this) {
     return function() {
       if (window.DEBUG) {
         ApiHeroUI.on('apihero-init-started apihero-init-complete', function(type) {

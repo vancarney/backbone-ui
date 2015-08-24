@@ -12,12 +12,12 @@ global.ApiHeroUI =
   interactions: {}
   plugins:{}
   utils:
-    guid = ->
+    guid: ->
       'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace /[xy]/g, (c)->
         (if (r = Math.random()*16|0)>=0 and c == 'x' then r else (r&0x3|0x8)).toString 16
-    isMobile = ->
+    isMobile: ->
       /Mobi/i.test navigator.userAgent
-    isPhonegap = ->
+    isPhonegap: ->
       (window.cordova || window.PhoneGap || window.phonegap)? || /^file:\/{3}[^\/]/i.test( window.location.href )
   search:{}
   routes: {}
