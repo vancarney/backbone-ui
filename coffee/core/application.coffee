@@ -43,6 +43,7 @@ class ApiHeroUI.core.Application extends ApiHeroUI.core.View
         else
           delete c.expires 
         Cookies.set "#{ApiHeroUI.ns}-auth", (window[ApiHeroUI.ns])?.Auth?.getInstance().getToken(), c
+        @router.refresh()
       @auth.on 'deauthenticated', =>
         c = ApiHeroUI.config.AuthCookie
         @router.refresh()
@@ -66,9 +67,9 @@ ApiHeroUI.core.Application::Router = class ApiHeroUI.core.Routes extends Backbon
   routes:
     "*actions":"url"
   refresh:->
-    @url window.location.pathname, window.location.search.replace /^?/, ''
+    @url window.location.pathname.replace(/^\//, ''), window.location.search.replace /^\?/, ''
   url:(route="",query)->
-    query = if query? then "?#{query}" else ''
+    query = if query?.length then "?#{query}" else ''
     $.ajax 
       url:"/#{route}#{query}"
       headers: 'Authorization' : (window[ApiHeroUI.ns])?.Auth?.getInstance().getToken()
@@ -76,7 +77,7 @@ ApiHeroUI.core.Application::Router = class ApiHeroUI.core.Routes extends Backbon
       @trigger 'view-loaded', data
 # intializes App into global scope
 (( global, $ ) ->
-  $(document).bind (if global.Util.isPhonegap() then 'deviceready' else 'ready'), =>
+  $(document).bind (if ApiHeroUI.utils.isPhonegap() then 'deviceready' else 'ready'), =>
     if window.DEBUG
       ApiHeroUI.on 'apihero-init-started apihero-init-complete', (type)->
         console.log "ApiHeroUI init #{type}: #{Date.now()}"
