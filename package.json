@@ -26,7 +26,7 @@
     "docco": "latest"
   },
   "scripts":{
-    "test":"cake test"
+    "test":"cake test",
     "install":"bower install"
   }
 }
