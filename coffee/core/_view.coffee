@@ -96,6 +96,7 @@ class ApiHeroUI.core.View extends Backbone.View
     @
   initialize:(o={})->
     @setTextFormatter o.textFormatter if o.hasOwnProperty 'textFormatter'
+    @init o if @init? and typeof @init is 'function'
     pkg = if (dataClass = @$el.attr 'data-source')? then ApiHeroUI.utils.getPackageClass dataClass else null
     if pkg?
       @collection = pkg if pkg instanceof Backbone.Collection
@@ -103,5 +104,4 @@ class ApiHeroUI.core.View extends Backbone.View
     @model?.on "change reset", @render, @
     @collection?.on "change reset add remove", @render, @
     @__parent = o.__parent if o.hasOwnProperty '__parent'
-    @init o if @init? and typeof @init is 'function'
     @render()

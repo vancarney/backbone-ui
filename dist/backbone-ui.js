@@ -505,6 +505,9 @@ ApiHeroUI.core.View = (function(superClass) {
     if (o.hasOwnProperty('textFormatter')) {
       this.setTextFormatter(o.textFormatter);
     }
+    if ((this.init != null) && typeof this.init === 'function') {
+      this.init(o);
+    }
     pkg = (dataClass = this.$el.attr('data-source')) != null ? ApiHeroUI.utils.getPackageClass(dataClass) : null;
     if (pkg != null) {
       if (pkg instanceof Backbone.Collection) {
@@ -522,9 +525,6 @@ ApiHeroUI.core.View = (function(superClass) {
     }
     if (o.hasOwnProperty('__parent')) {
       this.__parent = o.__parent;
-    }
-    if ((this.init != null) && typeof this.init === 'function') {
-      this.init(o);
     }
     return this.render();
   };
