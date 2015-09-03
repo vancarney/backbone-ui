@@ -20,7 +20,7 @@ class ApiHeroUI.components.FormView extends ApiHeroUI.core.View
       false
   setModel:(modelClass)->
     return throw 'setModel required setModel argument to not be undefined or null' unless modelClass?
-    @model = if typeof modelClass is 'function' then new @modelClass() else modelClass
+    (@model = if typeof modelClass is 'function' then new @modelClass() else modelClass)
     .on "change reset", (=> @trigger 'changing'), @
     .on 'invalid', ((model, e)=> @trigger 'invalid', message:e ), @
     @

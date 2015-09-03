@@ -1271,7 +1271,10 @@ ApiHeroUI.components.FormView = (function(superClass) {
   };
 
   FormView.prototype.setModel = function(modelClass) {
-    return this.model = new this.modelClass().on("change reset", ((function(_this) {
+    if (modelClass == null) {
+      throw 'setModel required setModel argument to not be undefined or null';
+    }
+    (this.model = typeof modelClass === 'function' ? new this.modelClass() : modelClass).on("change reset", ((function(_this) {
       return function() {
         return _this.trigger('changing');
       };
@@ -1282,6 +1285,7 @@ ApiHeroUI.components.FormView = (function(superClass) {
         });
       };
     })(this)), this);
+    return this;
   };
 
   FormView.prototype.init = function(o) {
