@@ -1274,7 +1274,7 @@ ApiHeroUI.components.FormView = (function(superClass) {
     if (modelClass == null) {
       throw 'setModel required setModel argument to not be undefined or null';
     }
-    (this.model = typeof modelClass === 'function' ? new this.modelClass() : modelClass).on("change reset", ((function(_this) {
+    (this.model = typeof modelClass === 'function' ? new modelClass() : modelClass).on("change reset", ((function(_this) {
       return function() {
         return _this.trigger('changing');
       };
