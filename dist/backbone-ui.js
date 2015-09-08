@@ -1245,12 +1245,13 @@ ApiHeroUI.components.FormView = (function(superClass) {
 
   FormView.prototype.events = {
     "change input.bind-change,textarea.bind-change,select.bind-change": function(evt) {
-      var identifier, t;
+      var identifier, t, val;
       if (this.model == null) {
-        identifier = this.$el.attr('id') || this.$el.attr('name') || this.$el.attr('class');
+        identifier = this.$el.prop('id') || this.$el.prop('name') || this.$el.prop('class');
         return console.log("Formview for '" + identifier + "' has no model");
       }
-      return this.model.set(((t = $(evt.target)).attr('name')).replace(/^reg_+/, ''), t.val(), {
+      val = ((t = $(evt.target)).prop('type')).match(/^(checkbox|radio)$/) ? t.is(':checked') : t.val();
+      return this.model.set((t.prop('name')).replace(/^reg_+/, ''), val, {
         validate: true
       });
     },
