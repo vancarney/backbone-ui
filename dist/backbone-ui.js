@@ -345,13 +345,14 @@ ApiHeroUI.core.View = (function(superClass) {
             clazz = view;
           }
           return _.each(_this.$el.find(selector), function(v, k) {
-            if (_.isArray(v)) {
-              _this[selector] = _.map(v, function(vEl) {
-                return new clazz(_.extend({}, _.clone(params), {
-                  el: vEl,
-                  __parent: _this
-                }));
-              });
+            if (_this[selector] != null) {
+              if (!_.isArray(_this[selector])) {
+                _this[selector] = [_this[selector]];
+              }
+              _this[selector].push(new clazz(_.extend({}, _.clone(params), {
+                el: v,
+                __parent: _this
+              })));
             } else {
               _this[selector] = new clazz(_.extend({}, _.clone(params), {
                 el: v,
@@ -458,7 +459,7 @@ ApiHeroUI.core.View = (function(superClass) {
         if ((idx = this.__children.indexOf(this[sel])) >= 0) {
           this.__children.splice(idx, 1);
         }
-        this[sel].remove();
+        this.$(sel).remove();
         delete this[sel];
         delete this.subviews[sel];
       }

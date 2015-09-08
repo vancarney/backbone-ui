@@ -24,8 +24,9 @@ class ApiHeroUI.core.View extends Backbone.View
         else
           clazz = view
         _.each (@$el.find selector), (v,k)=>
-          if _.isArray v
-            @[selector] = _.map v, (vEl)=> new clazz _.extend {}, _.clone(params), {el: vEl, __parent:@}
+          if @[selector]?
+            @[selector] = [ @[selector] ] unless _.isArray @[selector]
+            @[selector].push new clazz _.extend {}, _.clone(params), {el: v, __parent:@}
           else
             @[selector] = new clazz _.extend {}, _.clone(params), {el: v, __parent:@}
           @__children.push @[selector]
@@ -76,7 +77,7 @@ class ApiHeroUI.core.View extends Backbone.View
     if typeof sel is 'string'
       if @[sel]?
         @__children.splice idx,1 if (idx = @__children.indexOf @[sel]) >= 0
-        @[sel].remove()
+        @$(sel).remove()
         delete @[sel]
         delete @subviews[sel]
     else
