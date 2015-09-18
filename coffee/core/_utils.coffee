@@ -32,7 +32,8 @@ ApiHeroUI.utils.objectToQuery = (object={})->
 ApiHeroUI.utils.queryToObject = (string)->
   return null unless typeof string is 'string'
   o={}
-  decodeURIComponent(string).replace('?','').split('&').forEach (v,k)=> o[p[0]] = p[1] if (p = v.split '=').length == 2
+  decodeURIComponent(string).replace('?','').split('&').forEach (v,k)=> 
+    o[p[0]] = p[1] if (p = v.split '=').length == 2
   o
 ApiHeroUI.utils.getPackageClass = (_path)->
   return null unless _path? and typeof _path is 'string'
