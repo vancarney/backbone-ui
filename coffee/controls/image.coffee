@@ -13,6 +13,7 @@ class ApiHeroUI.controls.Image extends ApiHeroUI.core.View
       useMap: ""
       width: ""
     validate: ->
+  )
   render:(options)->
     return unless @options.isValid()
     @attributes = _.extend @attributes, @model.valueOf()

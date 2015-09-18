@@ -879,6 +879,58 @@ $.fn.DataLabel = (function(_this) {
 })(this);var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
+ApiHeroUI.controls.Image = (function(superClass) {
+  extend(Image, superClass);
+
+  function Image() {
+    return Image.__super__.constructor.apply(this, arguments);
+  }
+
+  Image.prototype.options = new (Backbone.Model.extend({
+    defaults: {
+      alt: "image",
+      complete: "",
+      crossOrigin: "",
+      currentSrc: "",
+      height: "",
+      isMap: "",
+      name: "",
+      src: "",
+      srcset: "",
+      useMap: "",
+      width: ""
+    },
+    validate: function() {}
+  }));
+
+  Image.prototype.render = function(options) {
+    if (!this.options.isValid()) {
+      return;
+    }
+    this.attributes = _.extend(this.attributes, this.model.valueOf());
+    return this;
+  };
+
+  Image.prototype.init = function() {
+    this.options.set(_.zipObject(this.$el.attributes));
+    return this.options.on('change', this.render, this);
+  };
+
+  return Image;
+
+})(ApiHeroUI.core.View);
+
+ApiHeroUI.controls.Image.create = function(opts) {
+  if (opts == null) {
+    opts = {};
+  }
+  return new ApiHeroUI.controls.Image({
+    el: new Image,
+    options: opts
+  });
+};var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
 ApiHeroUI.controls.ListItem = (function(superClass) {
   extend(ListItem, superClass);
 
