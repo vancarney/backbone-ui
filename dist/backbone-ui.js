@@ -886,34 +886,31 @@ ApiHeroUI.controls.Image = (function(superClass) {
     return Image.__super__.constructor.apply(this, arguments);
   }
 
-  Image.prototype.options = new (Backbone.Model.extend({
-    defaults: {
-      alt: "image",
-      complete: "",
-      crossOrigin: "",
-      currentSrc: "",
-      height: "",
-      isMap: "",
-      name: "",
-      src: "",
-      srcset: "",
-      useMap: "",
-      width: ""
-    },
-    validate: function() {}
-  }));
-
-  Image.prototype.render = function(options) {
-    if (!this.options.isValid()) {
-      return;
-    }
-    this.attributes = _.extend(this.attributes, this.model.valueOf());
-    return this;
-  };
-
   Image.prototype.init = function() {
+    this.options = new (Backbone.Model.extend({
+      defaults: {
+        alt: "image",
+        complete: "",
+        crossOrigin: "",
+        currentSrc: "",
+        height: "",
+        isMap: "",
+        name: "",
+        src: "",
+        srcset: "",
+        useMap: "",
+        width: ""
+      },
+      validate: function() {}
+    }));
     this.options.set(_.zipObject(this.$el.attributes));
-    return this.options.on('change', this.render, this);
+    return this.options.on('change', (function(_this) {
+      return function() {
+        return _.each(_this.options.changedAttributes(), function(v, k) {
+          return _this.$el.prop(k, v);
+        });
+      };
+    })(this));
   };
 
   return Image;
